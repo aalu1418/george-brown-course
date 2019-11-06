@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "parcel index.html"
+    "start": "parcel serve index.html --port 3000"
   },
   "dependencies": {
     "@material/dialog": "^4.0.0"
