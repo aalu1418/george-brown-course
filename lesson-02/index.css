@@ -1,0 +1,40 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  overflow: hidden;
+}
+
+.Scroller {
+  overflow: auto;
+  height: 100vh;
+}
+
+.Container {
+  margin-top: 1000px;
+  margin-bottom: 1000px;
+
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+}
+
+.Container_Headline {
+  margin-top: 0;
+}
+
+.Container_Section {
+  margin-bottom: 20px;
+  display: flex;
+}
+.Container_Section__Error .mdc-text-field__input,
+.Container_Section__Error .Container_RadioField {
+  background-color: rgba(200, 0, 0, 0.2);
+}
+
+.Container_Section__Column {
+  flex-direction: column;
+  align-items: flex-start;
+}
