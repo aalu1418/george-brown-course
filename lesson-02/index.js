@@ -1,14 +1,15 @@
-import * as mdc from 'material-components-web';
+import * as mdc from 'material-components-web'
 
-const textFieldElements = document.querySelectorAll( '.mdc-text-field')
-for (let textFieldElement of textFieldElements ) {
-  const textField = new mdc.textField.MDCTextField(textFieldElement);
+const textFieldElements = document.querySelectorAll('.mdc-text-field')
+for (let textFieldElement of textFieldElements) {
+  const textField = new mdc.textField.MDCTextField(textFieldElement)
 }
 
-const submitButtonElement = document.getElementById('submit-button'); submitButtonElement.addEventListener('click', onClickSubmit)
+const submitButtonElement = document.getElementById('submit-button')
+submitButtonElement.addEventListener('click', onClickSubmit)
 
 function onClickSubmit() {
-  const {elements } = submitButtonElement.form
+  const { elements } = submitButtonElement.form
   const data = new Map()
 
   for (let element of elements) {
@@ -18,20 +19,20 @@ function onClickSubmit() {
 
     if (element.type === 'radio') {
       if (element.checked) {
-        data.set(element.name, element.id);
-        continue;
+        data.set(element.name, element.id)
+        continue
       }
       continue
     }
 
     if (element.type === 'checkbox') {
-      data.set(element.id, element.checked);
-        continue
+      data.set(element.id, element.checked)
+      continue
     }
 
     if (element.type === 'text') {
       if (element.value === '') {
-        const section = element.closest('.Container_Section');
+        const section = element.closest('.Container_Section')
         showError(section)
         removeErrorOnTextInput(section, element)
         return
@@ -40,15 +41,15 @@ function onClickSubmit() {
       continue
     }
 
-    throw new Error(`Unrecognized element type: ${element.type}`);
+    throw new Error(`Unrecognized element type: ${element.type}`)
   }
 
   if (!data.get('diet-restrictions')) {
     const element = document.querySelector('[name="diet-restrictions"]')
     const section = element.closest('.Container_Section')
-    showError(section);
+    showError(section)
     removeErrorOnRadioChange(section, element)
-    return;
+    return
   }
 
   console.log('Data: %o', data)
@@ -57,7 +58,9 @@ function onClickSubmit() {
 
 function displayData(data) {
   const formOutputElement = document.getElementById('form-output')
-  if (!formOutputElement) { return; }
+  if (!formOutputElement) {
+    return
+  }
   const dataAsObject = Object.fromEntries(data.entries())
   formOutputElement.innerHTML = `
     <p>Output data:</p>
@@ -71,23 +74,25 @@ function showError(section) {
 }
 
 function removeErrorOnTextInput(section, element) {
-  element.addEventListener('input', ( )=> removeError(section))
+  element.addEventListener('input', () => removeError(section))
 }
 
 function removeErrorOnRadioChange(section, element) {
   const radioElements = section.querySelectorAll('input[type=radio]')
   for (let radioElement of radioElements) {
-    radioElement.addEventListener('change', ( )=> removeError(section))
+    radioElement.addEventListener('change', () => removeError(section))
   }
 }
 
 function removeError(section) {
-    section.classList.remove('Container_Section__Error')
+  section.classList.remove('Container_Section__Error')
 }
 
-document.getElementById('screen-data').innerHTML = "<p>Screen Size: "+window.innerWidth+" x "+window.innerHeight+"</p>"
-console.dir(document.body);
+document.getElementById('screen-data').innerHTML =
+  '<p>Screen Size: ' + window.innerWidth + ' x ' + window.innerHeight + '</p>'
+console.dir(document.body)
 
 window.onresize = () => {
-  document.getElementById('screen-data').innerHTML = "<p>Screen Size: "+window.innerWidth+" x "+window.innerHeight+"</p>"
+  document.getElementById('screen-data').innerHTML =
+    '<p>Screen Size: ' + window.innerWidth + ' x ' + window.innerHeight + '</p>'
 }
