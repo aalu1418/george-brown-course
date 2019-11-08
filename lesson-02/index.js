@@ -33,6 +33,7 @@ function onClickSubmit() {
       if (element.value === '') {
         const section = element.closest('.Container_Section');
         showError(section)
+        removeErrorOnTextInput(section, element)
         return
       }
       data.set(element.id, element.value)
@@ -46,6 +47,7 @@ function onClickSubmit() {
     const element = document.querySelector('[name="diet-restrictions"]')
     const section = element.closest('.Container_Section')
     showError(section);
+    removeErrorOnRadioChange(section, element)
     return;
   }
 
@@ -68,10 +70,6 @@ function showError(section) {
   setTimeout(() => alert('Please fill in a value for the field'), 100)
 }
 
-<<<<<<< HEAD
-function removeError(section) {
-  section.classList.remove('Container_Section__Error')
-=======
 function removeErrorOnTextInput(section, element) {
   element.addEventListener('input', ( )=> removeError(section))
 }
@@ -85,5 +83,4 @@ function removeErrorOnRadioChange(section, element) {
 
 function removeError(section) {
     section.classList.remove('Container_Section__Error')
->>>>>>> upstream/master
 }
