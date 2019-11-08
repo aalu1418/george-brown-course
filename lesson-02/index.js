@@ -84,3 +84,10 @@ function removeErrorOnRadioChange(section, element) {
 function removeError(section) {
     section.classList.remove('Container_Section__Error')
 }
+
+document.getElementById('screen-data').innerHTML = "<p>Screen Size: "+window.innerWidth+" x "+window.innerHeight+"</p>"
+console.dir(document.body);
+
+window.onresize = () => {
+  document.getElementById('screen-data').innerHTML = "<p>Screen Size: "+window.innerWidth+" x "+window.innerHeight+"</p>"
+}
