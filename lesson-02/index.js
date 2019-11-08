@@ -2,7 +2,7 @@ import * as mdc from 'material-components-web';
 
 const textFieldElements = document.querySelectorAll( '.mdc-text-field')
 for (let textFieldElement of textFieldElements ) {
-  const textField = new mdc.textField.MDCTextFieldd(textFieldElement);
+  const textField = new mdc.textField.MDCTextField(textFieldElement);
 }
 
 const submitButtonElement = document.getElementById('submit-button'); submitButtonElement.addEventListener('click', onClickSubmit)
@@ -44,7 +44,7 @@ function onClickSubmit() {
 
   if (!data.get('diet-restrictions')) {
     const element = document.querySelector('[name="diet-restrictions"]')
-  const section = element.closest('.Container_Section')
+    const section = element.closest('.Container_Section')
     showError(section);
     return;
   }
@@ -64,8 +64,10 @@ function displayData(data) {
 }
 
 function showError(section) {
-
-
   section.classList.add('Container_Section__Error')
   setTimeout(() => alert('Please fill in a value for the field'), 100)
+}
+
+function removeError(section) {
+  section.classList.remove('Container_Section__Error')
 }
