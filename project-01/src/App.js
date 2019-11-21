@@ -10,8 +10,8 @@ import useInfoState from './hooks/useInfoState'
 import useFormState from './hooks/useFormState'
 
 export default function App() {
-  let info = useInfoState()
-  let form = useFormState()
+  const info = useInfoState()
+  const form = useFormState()
 
   const info_basic = (
     <FormSection

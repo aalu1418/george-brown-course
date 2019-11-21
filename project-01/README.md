@@ -17,10 +17,11 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
 - [x] Create basic form with 3 sections in React (using states to store info)
 - [x] Include Continue/Submit button functionality
 - [x] Hide each form until previous section completed
-- [ ] Network offline handling
+- [x] Network offline handling
 - [ ] Integrate with Firestore
   - [ ] Setup rules to allow for writing by anyone, but not reading
   - [ ] Show submit loading state & completed state for submit button
+- [ ] Deploy with Firebase
 - [ ] Style with CSS
 
 ---
