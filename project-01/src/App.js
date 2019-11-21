@@ -4,23 +4,49 @@ import FormTitle from './components/FormTitle'
 import FormField from './components/FormField'
 import FormFieldHeading from './components/FormFieldHeading'
 import FormLabel from './components/FormLabel'
-import FormTextInput from './components/FormTextInput'
+import TextInput from './components/TextInput'
 import FormSubmit from './components/FormSubmit'
 
 export default function App() {
+  let [value, setValue] = React.useState({
+    fname: '',
+    lname: '',
+    diet: 'None',
+    city: '',
+    province: 'Ontario',
+    payment: "",
+    terms:false,
+  })
+  const onChange = event => {
+    switch(event.target.id){
+      case "terms":
+        setValue({ ...value, [event.target.id]: event.target.checked })
+        break;
+      default:
+        setValue({ ...value, [event.target.id]: event.target.value })
+        break;
+    }
+  }
+
   const info_basic = (
     <FormSection title='Basic Information'>
       <FormFieldTextInput
         label='First Name'
         placeholder='Input your first name'
+        id='fname'
+        onChange={onChange}
       ></FormFieldTextInput>
       <FormFieldTextInput
         label='Last Name'
         placeholder='Input your last name'
+        id='lname'
+        onChange={onChange}
       ></FormFieldTextInput>
       <FormFieldDropDown
         label='Diet Restriction'
         list={['None', 'Vegan', 'Vegetarian', 'Halal/Kosher']}
+        onChange={onChange}
+        id='diet'
       ></FormFieldDropDown>
     </FormSection>
   )
@@ -30,6 +56,8 @@ export default function App() {
       <FormFieldTextInput
         label='City'
         placeholder='Input your city'
+        id='city'
+        onChange={onChange}
       ></FormFieldTextInput>
       <FormFieldDropDown
         label='Province'
@@ -48,6 +76,8 @@ export default function App() {
           'Nunavut',
           'Yukon',
         ]}
+        onChange={onChange}
+        id='province'
       ></FormFieldDropDown>
     </FormSection>
   )
@@ -57,8 +87,11 @@ export default function App() {
       <FormFieldRadioButtons
         label='Payment Method'
         list={['Bitcoin', 'PayPal', 'Credit Card']}
+        id = "payment"
+        onChange={onChange}
+        value = {value.payment}
       ></FormFieldRadioButtons>
-      <FormFieldCheckbox label='I agree to the Terms and Conditions'></FormFieldCheckbox>
+    <FormFieldCheckbox id='terms' label='I agree to the Terms and Conditions' onChange={onChange}></FormFieldCheckbox>
     </FormSection>
   )
 
@@ -67,7 +100,9 @@ export default function App() {
       <div className='App-Content'>
         <div>
           <FormTitle>Checkout</FormTitle>
-          {[info_basic, info_address, info_payment]}
+          {info_basic}
+          {info_address}
+          {info_payment}
         </div>
       </div>
     </div>
@@ -95,35 +130,38 @@ const FormFieldFrame = ({ label, children }) => {
   )
 }
 
-const FormFieldTextInput = ({ label, placeholder }) => {
+const FormFieldTextInput = ({ label, placeholder, id, onChange }) => {
   return (
     <FormFieldFrame label={label}>
-      <FormTextInput placeholder={placeholder}></FormTextInput>
+      <TextInput
+        placeholder={placeholder}
+        id={id}
+        onChange={onChange}
+      ></TextInput>
     </FormFieldFrame>
   )
 }
 
-const FormFieldDropDown = ({ label, setValue, list }) => {
-  const onChange = event => setValue(event.target.value)
+const FormFieldDropDown = ({ label, onChange, list, id }) => {
   return (
     <FormFieldFrame label={label}>
-      <select onChange={onChange}>
-        {list.map(value => (
-          <option value={value}>{value}</option>
+      <select id={id} onChange={onChange}>
+        {list.map((value) => (
+          <option key={value} value={value}>{value}</option>
         ))}
       </select>
     </FormFieldFrame>
   )
 }
 
-const FormFieldRadioButtons = ({ label, list }) => {
+const FormFieldRadioButtons = ({ label, list, onChange, value, id }) => {
   return (
     <FormFieldFrame label={label}>
-      {list.map(element => {
+      {list.map((element) => {
         return (
-          <div>
-            <label>
-              <input type='radio' value={element} />
+          <div key={element}>
+            <label key={element}>
+              <input key={element} type='radio' value={element} checked={value === element} onChange={onChange} id={id}/>
               {element}
             </label>
           </div>
@@ -133,11 +171,11 @@ const FormFieldRadioButtons = ({ label, list }) => {
   )
 }
 
-const FormFieldCheckbox = ({ label }) => {
+const FormFieldCheckbox = ({ label, id, onChange}) => {
   return (
     <FormFieldFrame>
       <label>
-        <input type='checkbox' />
+        <input id={id} type='checkbox' onChange={onChange}/>
         {label}
       </label>
     </FormFieldFrame>
