@@ -14,7 +14,7 @@ const FormSection = ({ title, children, onClick, value, conditions}) => {
       {!network.isOnline && <ErrorMessage label="Please connect to the internet to continue"></ErrorMessage>}
       <FormSubmit
         onClick = {onClick}
-        isComplete={value === 4}
+        isComplete={value >= 4}
         isDisabled={conditions || !network.isOnline}
         isLoading={value === 3}
         completeText='Success!'

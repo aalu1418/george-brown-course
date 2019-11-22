@@ -8,11 +8,48 @@ import FormFieldTextInput from './components/FormFieldTextInput'
 import FormFieldCheckbox from './components/FormFieldCheckbox'
 import useInfoState from './hooks/useInfoState'
 import useFormState from './hooks/useFormState'
+// import * as firebase from 'firebase'
+import firebase from 'firebase/app'
+import 'firebase/firestore'
+
+// Your web app's Firebase configuration
+var firebaseConfig = {
+  apiKey: 'AIzaSyDfEBS4Ee0JJRJ_pYfr2HQ1UEI1LQLieGM',
+  authDomain: 'gb-fullstackiii-project.firebaseapp.com',
+  databaseURL: 'https://gb-fullstackiii-project.firebaseio.com',
+  projectId: 'gb-fullstackiii-project',
+  storageBucket: 'gb-fullstackiii-project.appspot.com',
+  messagingSenderId: '829648199918',
+  appId: '1:829648199918:web:b9238e3d42356b3c5453ff',
+}
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig)
 
 export default function App() {
   const info = useInfoState()
   const form = useFormState()
 
+  //send to database using a hook on form.value state
+  const submit_check = form.value === 3 //prevents run if form.value changes from 0 -> 1 -> 2
+  React.useEffect(() => {
+    const db = firebase.firestore()
+    if (form.value === 3) { //prevents run on first renders
+      db.collection('entries')
+        .doc(String(Date.now()))
+        .set(info.value)
+        .then(() => {
+          setTimeout(() => { //use timeout to give a pause between button states
+            console.log('Database successfully written!')
+            form.onChange()
+          }, 2000)
+        })
+        .catch(function(error) {
+          console.error('Error writing database: ', error)
+        })
+    }
+  }, [submit_check])
+
+  //basic information
   const info_basic = (
     <FormSection
       title='Basic Information'
@@ -41,6 +78,7 @@ export default function App() {
     </FormSection>
   )
 
+  //address information
   const info_address = (
     <FormSection
       title='Address Information'
@@ -77,6 +115,7 @@ export default function App() {
     </FormSection>
   )
 
+  //payment information
   const info_payment = (
     <FormSection
       title='Payment Information'
@@ -104,6 +143,7 @@ export default function App() {
       <div className='App-Content'>
         <div>
           <FormTitle>Checkout</FormTitle>
+          {/**show forms based on page state**/}
           {form.value === 0 && info_basic}
           {form.value === 1 && info_address}
           {form.value >= 2 && info_payment}

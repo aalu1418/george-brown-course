@@ -6,24 +6,35 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
 
 ###### Included Technologies
 - React
-- Firebase (Firestore)
+- Firebase (Firestore, Hosting)
 - npm
 ---
 
 ### Useful Links
 - [Starting Firebase & React](https://www.youtube.com/watch?v=mwNATxfUsgI)
+- [Deploy React on Firebase Hosting](https://www.codementor.io/yurio/all-you-need-is-react-firebase-4v7g9p4kf)
+- [Firebase Firestore + React](https://medium.com/get-it-working/get-googles-firestore-working-with-react-c78f198d2364)
 
 ### Task list
 - [x] Create basic form with 3 sections in React (using states to store info)
 - [x] Include Continue/Submit button functionality
 - [x] Hide each form until previous section completed
 - [x] Network offline handling
-- [ ] Integrate with Firestore
-  - [ ] Setup rules to allow for writing by anyone, but not reading
-  - [ ] Show submit loading state & completed state for submit button
-- [ ] Deploy with Firebase
-- [ ] Commenting code
+- [x] Integrate with Firestore
+  - [x] Setup rules to allow for writing by anyone, but not reading
+  - [x] Show submit loading state & completed state for submit button
+- [x] Deploy with Firebase
+  - run ```npm run build``` and ```firebase deploy```
+- [x] Commenting code
 - [ ] Style with CSS
+- [ ] Bonus things
+  - [ ] Disable form when ```submit``` button is clicked
+  - [ ] Spinning icon when loading
+  - [ ] Readme writeup
+  - [ ] Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
+
+### Questions
+- [ ] ```React Hook React.useEffect has missing dependencies``` error (but not needed as dependencies)
 
 ---
 ### Specifications
