@@ -4,10 +4,21 @@ Aaron Lu - 101278524
 Deployed Website:  https://gb-fullstackiii-project.web.app/  
 Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/project-01
 
-###### Included Technologies
+##### Project Description
 - React
-- Firebase (Firestore, Hosting)
+  - Matches the form requirements
+  - Custom components are placed in ```components```folder with corresponding css files
+    - Uses some of the given components as baseline
+    - ```FormField```, ```FormFieldCheckbox```, ```FormFieldDropDown```, ```FormFieldFrame```, ```FormFieldRadioButtons```, ```FormFieldTextInput```, and ```FormSection```
+    - Other components had small modifications
+  - Custom hooks are placed in ```hooks``` folder
+    - ```useFormState``` and ```useInfoState```
+    - ```useNetworkStatusEffect``` used to check if online/offline
 - npm
+  - used to manage React packages and Firebase packages
+- Firebase (Hosting & Firestore)
+  - Firestore setup with write permissions and no read permissions
+  - Hosting used to deploy site
 ---
 
 ### Useful Links
@@ -26,15 +37,16 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
 - [x] Deploy with Firebase
   - run ```npm run build``` and ```firebase deploy```
 - [x] Commenting code
-- [ ] Style with CSS
+- [x] Style with CSS using BEM format
 - [ ] Bonus things
-  - [ ] Disable form when ```submit``` button is clicked
+  - [x] Disable form when ```submit``` button is clicked
   - [ ] Spinning icon when loading
-  - [ ] Readme writeup
+  - [ ] Handle if text entry is only spaces
+  - [x] Readme writeup
   - [ ] Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
 
 ### Questions
-- [ ] ```React Hook React.useEffect has missing dependencies``` error (but not needed as dependencies)
+- [ ] ```React Hook React.useEffect has missing dependencies``` warning (but not needed as dependencies)
 
 ---
 ### Specifications
@@ -59,6 +71,26 @@ Link for [Full Details](https://www.notion.so/Project-Checkout-Form-cc2deee7fee9
 - Show the loading state when saving the data.
 - Disable the button and show a warning when there is no network connection.
 - Disable the button when a section is not complete.
+
+### Rubric
+- Firestore correctly initialized
+- Firestore documents created with all required data
+- Correct use of BEM class names
+- Form: Basic Info has all fields
+- Form: Address Info has all fields
+- Form: Payment Info has all fields
+- One form section visible at a time
+- Network offline message
+- Submit disabled without a connection
+- Submit disabled when visible section not completed
+- Submit button text updated while saving
+- Component markup shared between various field types
+- Component hooks shared between various field types
+- Avoid using side-effects; except with useEffect
+- All field labels and inputs included
+- Correct layout of sections
+- Correct layout of fields
+- BONUS: Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
 
 ### Submission Details
 Use the `project-01` directory in [github.com/amsul/george-brown-course](https://github.com/amsul/george-brown-course) as your starting point.

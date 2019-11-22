@@ -4,10 +4,12 @@
   min-height: 40px;
 
   font: inherit;
+  color: inherit;
 
   padding: 0 12px;
   border-radius: 3px;
-  border: 1px solid #ccc;
+  border: 1px solid #616161;
+  background-color: #616161;
 }
 
 .TextInput__Area {

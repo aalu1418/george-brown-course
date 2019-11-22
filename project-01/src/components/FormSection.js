@@ -1,3 +1,4 @@
+import "./FormSection.css"
 import React from 'react'
 
 import FormSubmit from './FormSubmit'
@@ -8,7 +9,7 @@ const FormSection = ({ title, children, onClick, value, conditions}) => {
   const network = useNetworkStatusEffect()
 
   return (
-    <section>
+    <section className="FormSection-Section">
       <h2>{title}</h2>
       {children}
       {!network.isOnline && <ErrorMessage label="Please connect to the internet to continue"></ErrorMessage>}

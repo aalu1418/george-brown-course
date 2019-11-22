@@ -1,16 +1,23 @@
+import './FormFieldCheckbox.css'
 import React from 'react'
 
 import FormFieldFrame from './FormFieldFrame'
 
-const FormFieldCheckbox = ({ label, id, onChange}) => {
+const FormFieldCheckbox = ({ label, id, onChange, disableIf }) => {
   return (
     <FormFieldFrame>
-      <label>
-        <input id={id} type='checkbox' onChange={onChange}/>
+      <label className='Checkbox-label'>
+        <input
+          className='Checkbox-check'
+          id={id}
+          type='checkbox'
+          onChange={onChange}
+          disabled = {disableIf}
+        />
         {label}
       </label>
     </FormFieldFrame>
   )
 }
 
-export default FormFieldCheckbox;
+export default FormFieldCheckbox

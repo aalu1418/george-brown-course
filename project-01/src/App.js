@@ -62,18 +62,21 @@ export default function App() {
         placeholder='Input your first name'
         id='fname'
         onChange={info.onChange}
+        disableIf={form.value >= 3}
       ></FormFieldTextInput>
       <FormFieldTextInput
         label='Last Name'
         placeholder='Input your last name'
         id='lname'
         onChange={info.onChange}
+        disableIf={form.value >= 3}
       ></FormFieldTextInput>
       <FormFieldDropDown
         label='Diet Restriction'
         list={['None', 'Vegan', 'Vegetarian', 'Halal/Kosher']}
         onChange={info.onChange}
         id='diet'
+        disableIf={form.value >= 3}
       ></FormFieldDropDown>
     </FormSection>
   )
@@ -91,6 +94,7 @@ export default function App() {
         placeholder='Input your city'
         id='city'
         onChange={info.onChange}
+        disableIf={form.value >= 3}
       ></FormFieldTextInput>
       <FormFieldDropDown
         label='Province'
@@ -111,6 +115,7 @@ export default function App() {
         ]}
         onChange={info.onChange}
         id='province'
+        disableIf={form.value >= 3}
       ></FormFieldDropDown>
     </FormSection>
   )
@@ -129,11 +134,13 @@ export default function App() {
         id='payment'
         onChange={info.onChange}
         value={info.value.payment}
+        disableIf={form.value >= 3}
       ></FormFieldRadioButtons>
       <FormFieldCheckbox
         id='terms'
         label='I agree to the Terms and Conditions'
         onChange={info.onChange}
+        disableIf={form.value >= 3}
       ></FormFieldCheckbox>
     </FormSection>
   )
