@@ -22,6 +22,7 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
   - [ ] Setup rules to allow for writing by anyone, but not reading
   - [ ] Show submit loading state & completed state for submit button
 - [ ] Deploy with Firebase
+- [ ] Commenting code
 - [ ] Style with CSS
 
 ---
