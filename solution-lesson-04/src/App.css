@@ -1,0 +1,94 @@
+/* App */
+
+.App {
+  background: #fff;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.App-Content {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.App-Title {
+  margin: 0 0 40px;
+}
+
+/* FormField */
+
+.FormField {
+  margin-bottom: 20px;
+}
+
+.FormField-Heading {
+  margin-bottom: 8px;
+}
+
+.FormField-Label {
+}
+.FormField-Label__Radio {
+  margin-right: 10px;
+}
+
+.FormField-LabelText {
+  display: inline-flex;
+  padding-bottom: 8px;
+}
+.FormField-LabelText__Radio {
+  padding-bottom: 0;
+}
+
+.FormField-Input {
+}
+.FormField-Input__Text {
+  width: 100%;
+  height: 40px;
+
+  font: inherit;
+
+  padding: 0 12px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.FormField-Input__Checkbox,
+.FormField-Input__Radio {
+  margin-right: 5px;
+}
+
+/* FormSubmit */
+
+.FormSubmit {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 40px;
+}
+
+.FormSubmit-Button {
+  height: 40px;
+  padding: 0 20px;
+
+  background-color: #0069ce;
+  border: 0;
+  border-radius: 5px;
+
+  font: inherit;
+  font-weight: bold;
+  color: white;
+}
+.FormSubmit-Button:hover {
+  background-color: #00499e;
+  cursor: pointer;
+}
+.FormSubmit-Button[disabled] {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
