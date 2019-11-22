@@ -1,5 +1,2 @@
-1. Clone this repo
-1. `cd` into this directory
-1. Run `npm install`
-1. Run `npm start`
-1. Go into `src/App.js` to do the lab test
+Aaron Lu - 101278524
+https://www.notion.so/Lab-Test-To-Do-List-0fe3517f2d87409182d5ba587244cfaa
