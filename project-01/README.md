@@ -30,6 +30,7 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
 - [Deploy React on Firebase Hosting](https://www.codementor.io/yurio/all-you-need-is-react-firebase-4v7g9p4kf)
 - [Firebase Firestore + React](https://medium.com/get-it-working/get-googles-firestore-working-with-react-c78f198d2364)
 - [Material Design Color Palates](https://material.io/design/color/the-color-system.html#tools-for-picking-colors)
+- [Font Awesome](https://fontawesome.com/)
 
 ### Task list
 - [x] Create basic form with 3 sections in React (using states to store info)
@@ -51,7 +52,7 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
   - [x] Handle if text entry is only spaces
   - [x] button to restart
   - [x] Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
-  - [ ] Back button?
+  - [x] Back button
 
 ### Questions
 - [x] ```React Hook React.useEffect has missing dependencies``` warning (but not needed as dependencies)

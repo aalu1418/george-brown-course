@@ -1,8 +1,9 @@
 .FormSubmit {
   display: flex;
   justify-content: center;
+  flex-grow: 2;
 
-  margin-top: 40px;
+  /* margin-top: 40px; */
 }
 
 .FormSubmit-Button {

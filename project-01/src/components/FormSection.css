@@ -1,3 +1,5 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css');
+
 .FormSection-Section {
   background-color: #424242;
   border-radius: 1rem;
@@ -6,4 +8,27 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
   box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.FormSection-Buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.FormSection-SmallSpace {
+  flex-grow: 1;
+  max-width: 50px;
+}
+
+.FormSection-BackButton {
+  height: 100%;
+  font-size: 20pt;
+  color: #BDBDBD;
+  background: None;
+  border: None;
+  cursor: pointer;
+}
+
+.FormSection-BackButton:hover {
+  color: #9E9E9E;
 }

@@ -71,8 +71,7 @@ export default function App() {
   const info_basic = (
     <FormSection
       title='Basic Information'
-      onClick={form.onChange}
-      value={form.value}
+      state={form}
       conditions={
         info.value.fname === '' ||
         info.value.lname === '' ||
@@ -111,8 +110,7 @@ export default function App() {
   const info_address = (
     <FormSection
       title='Address Information'
-      onClick={form.onChange}
-      value={form.value}
+      state={form}
       conditions={info.value.city === '' || info.value.city.trim().length === 0}
     >
       <FormFieldTextInput
@@ -152,8 +150,7 @@ export default function App() {
   const info_payment = (
     <FormSection
       title='Payment Information'
-      onClick={form.onChange}
-      value={form.value}
+      state={form}
       conditions={info.value.payment === '' || !info.value.terms}
     >
       <FormFieldRadioButtons
