@@ -17,7 +17,7 @@ const FormRestart = ({info, form}) => {
 
   return (
       <div className="FormRestart-div">
-        <button className="FormRestart-button" onClick={onClick}>Click Here to Submit Another Form</button>
+        <button className="FormRestart-button" onClick={onClick}>Click here to submit another form</button>
       </div>
   )
 }

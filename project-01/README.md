@@ -9,7 +9,7 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
   - Matches the form requirements
   - Custom components are placed in ```components``` folder with corresponding ```.css``` files
     - Uses some of the given components as baseline
-    - ```FormField```, ```FormFieldCheckbox```, ```FormFieldDropDown```, ```FormFieldFrame```, ```FormFieldRadioButtons```, ```FormFieldTextInput```, and ```FormSection```
+    - ```FormField```, ```FormFieldCheckbox```, ```FormFieldDropDown```, ```FormFieldFrame```, ```FormFieldRadioButtons```, ```FormFieldTextInput```, ```FormRestart``` and ```FormSection```
     - Other components had small modifications
   - Loading animation is found on [loading.io/css](https://loading.io/css/)
   - Custom hooks are placed in ```hooks``` folder
