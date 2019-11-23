@@ -3,7 +3,7 @@ import React from 'react'
 
 import FormFieldFrame from './FormFieldFrame'
 
-const FormFieldDropDown = ({ label, onChange, list, id, disableIf }) => {
+const FormFieldDropDown = ({ label, onChange, list, id, disableIf, value }) => {
   return (
     <FormFieldFrame label={label}>
       <select
@@ -11,6 +11,7 @@ const FormFieldDropDown = ({ label, onChange, list, id, disableIf }) => {
         className='DropDown-select'
         id={id}
         onChange={onChange}
+        value={value}
       >
         {list.map(value => (
           <option className='DropDown-option' key={value} value={value}>

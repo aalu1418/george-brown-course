@@ -3,7 +3,7 @@ import React from 'react'
 
 import FormFieldFrame from './FormFieldFrame'
 
-const FormFieldCheckbox = ({ label, id, onChange, disableIf }) => {
+const FormFieldCheckbox = ({ label, id, onChange, disableIf, checked }) => {
   return (
     <FormFieldFrame>
       <label className='Checkbox-label'>
@@ -13,6 +13,7 @@ const FormFieldCheckbox = ({ label, id, onChange, disableIf }) => {
           type='checkbox'
           onChange={onChange}
           disabled = {disableIf}
+          checked={checked}
         />
         {label}
       </label>

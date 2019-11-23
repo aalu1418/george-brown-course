@@ -1,0 +1,17 @@
+.FormRestart-div {
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+}
+
+.FormRestart-button {
+  width: 75%;
+  padding: 0.5rem;
+  background-color: #0069ce;
+  border: 0;
+  border-radius: 5px;
+  font: inherit;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+}

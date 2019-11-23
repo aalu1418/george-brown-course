@@ -11,13 +11,16 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
     - Uses some of the given components as baseline
     - ```FormField```, ```FormFieldCheckbox```, ```FormFieldDropDown```, ```FormFieldFrame```, ```FormFieldRadioButtons```, ```FormFieldTextInput```, and ```FormSection```
     - Other components had small modifications
+  - Loading animation is found on [loading.io/css](https://loading.io/css/)
   - Custom hooks are placed in ```hooks``` folder
     - ```useFormState``` and ```useInfoState```
     - ```useNetworkStatusEffect``` used to check if online/offline
 - npm
   - used to manage React packages and Firebase packages
+  - ```npm run build``` used to create production React files for deployment
 - Firebase (Hosting & Firestore)
   - Firestore setup with write permissions and no read permissions
+    - writes to the ```entries``` collection and uses the timestamp as the document title
   - Hosting used to deploy site
 ---
 
@@ -40,10 +43,11 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
 - [x] Style with CSS using BEM format
 - [ ] Bonus things
   - [x] Disable form when ```submit``` button is clicked
-  - [ ] Spinning icon when loading
-  - [ ] Handle if text entry is only spaces
+  - [x] Spinning icon when loading
+  - [x] Handle if text entry is only spaces
   - [x] Readme writeup
-  - [ ] Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
+  - [x] Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
+  - [x] button to restart
 
 ### Questions
 - [ ] ```React Hook React.useEffect has missing dependencies``` warning (but not needed as dependencies)

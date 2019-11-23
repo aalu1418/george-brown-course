@@ -21,7 +21,7 @@ const useInfoState = () => {
     }
   }
 
-  return {value, onChange}
+  return {value, onChange, setValue}
 }
 
 export default useInfoState;

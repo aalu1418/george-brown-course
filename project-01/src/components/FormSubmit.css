@@ -6,7 +6,11 @@
 }
 
 .FormSubmit-Button {
-  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 45px;
+  min-width: 125px;
   padding: 0 20px;
 
   background-color: #0069ce;

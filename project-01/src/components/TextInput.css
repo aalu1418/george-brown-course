@@ -18,3 +18,7 @@
   resize: none;
   height: auto;
 }
+
+.TextInput::placeholder {
+  color: #9E9E9E;
+}

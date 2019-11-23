@@ -3,7 +3,7 @@ import React from 'react'
 import FormFieldFrame from './FormFieldFrame'
 import TextInput from './TextInput'
 
-const FormFieldTextInput = ({ label, placeholder, id, onChange, disableIf }) => {
+const FormFieldTextInput = ({ label, placeholder, id, onChange, disableIf, value }) => {
   return (
     <FormFieldFrame label={label}>
       <TextInput
@@ -11,6 +11,7 @@ const FormFieldTextInput = ({ label, placeholder, id, onChange, disableIf }) => 
         id={id}
         onChange={onChange}
         disableIf = {disableIf}
+        value = {value}
       ></TextInput>
     </FormFieldFrame>
   )
