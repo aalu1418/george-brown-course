@@ -51,6 +51,7 @@ Github Repository: https://github.com/aalu1418/george-brown-course/tree/master/p
   - [x] Handle if text entry is only spaces
   - [x] button to restart
   - [x] Save & restore fields to local storage when each section is completed; Clear local storage after saving to Firestore
+  - [ ] Back button?
 
 ### Questions
 - [x] ```React Hook React.useEffect has missing dependencies``` warning (but not needed as dependencies)
