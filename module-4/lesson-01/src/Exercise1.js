@@ -15,83 +15,60 @@ export default function App() {
   )
 }
 
-class Timer extends React.Component {
-  intervalId = null
+const Timer = () => {
+  const [isStopped, setIsStopped] = React.useState(true)
+  const [currentTime, setCurrentTime] = React.useState(0)
 
-  state = {
-    currentTime: 0,
-    isStopped: true,
-  }
-
-  render() {
-    const { isStopped, currentTime } = this.state
-    return (
-      <div>
-        <div>Current time: {this.getFormattedCurrentTime()}</div>
-        <br />
-        <Divider />
-        <br />
-        <Button
-          variant='contained'
-          color='primary'
-          onClick={this.onClickStartStop}
-        >
-          {isStopped ? 'Start' : 'Stop'}
-        </Button>
-        <br />
-        <br />
-        <Button
-          variant='contained'
-          color='secondary'
-          onClick={this.onClickReset}
-          disabled={currentTime === 0}
-        >
-          Reset
-        </Button>
-      </div>
-    )
-  }
-
-  componentWillUnmount() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId)
-    }
-  }
-
-  onClickStartStop = () => {
-    const nextIsStopped = !this.state.isStopped
-    this.setState({
-      isStopped: nextIsStopped,
-    })
-
-    if (this.intervalId) {
-      clearInterval(this.intervalId)
-    }
-
-    if (!nextIsStopped) {
-      this.intervalId = setInterval(() => {
-        this.setState({
-          currentTime: this.state.currentTime + 1,
-        })
-      }, 1000)
-    }
-  }
-
-  onClickReset = () => {
-    this.setState({
-      currentTime: 0,
-      isStopped: true,
-    })
-    if (this.intervalId) {
-      clearInterval(this.intervalId)
-    }
-  }
-
-  getFormattedCurrentTime() {
-    const { currentTime } = this.state
+  const getFormattedCurrentTime = () => {
     if (currentTime === 1) {
       return `${currentTime} second passed`
     }
     return `${currentTime} seconds passed`
   }
+
+  React.useEffect(() => {
+    let intervalId = null
+    if (!isStopped) {
+      intervalId = setInterval(() => {
+        // console.log('running')
+        setCurrentTime(currentTime+1)
+      }, 1000)
+    }
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId)
+      }
+    }
+  }, [isStopped, currentTime])
+
+  const onClickReset = () => {
+    setCurrentTime(0)
+    setIsStopped(true)
+  }
+
+  const onClickStartStop = () => {
+    setIsStopped(!isStopped)
+  }
+
+  return (
+    <div>
+      <div>Current time: {getFormattedCurrentTime()}</div>
+      <br />
+      <Divider />
+      <br />
+      <Button variant='contained' color='primary' onClick={onClickStartStop}>
+        {isStopped ? 'Start' : 'Stop'}
+      </Button>
+      <br />
+      <br />
+      <Button
+        variant='contained'
+        color='secondary'
+        onClick={onClickReset}
+        disabled={currentTime === 0}
+      >
+        Reset
+      </Button>
+    </div>
+  )
 }

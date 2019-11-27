@@ -34,5 +34,27 @@ export default function App() {
 
 function Form() {
   // Put your answers here 👇
-  return null
+  let trumpQuotes = [];
+  fetchData("https://api.whatdoestrumpthink.com/api/v1/quotes").then(output => {
+    trumpQuotes.push(...output.messages.non_personalized)
+    console.log(trumpQuotes);
+  })
+
+  return (
+    <Grid container direction='row' justify='center' alignItems='flex-start'>
+      <Grid item xs={6}>
+        <TextField id='filled-basic' label='First Name' variant='filled' />
+      </Grid>
+      <Grid item xs={6}>
+        <TextField id='filled-basic' label='Last Name' variant='filled' />
+      </Grid>
+      <Grid item xs={12}>
+        <Select labelId='label' id='select'>
+          {trumpQuotes.map((quote, index) => {
+            return <MenuItem id={index}>{quote}</MenuItem>
+          })}
+        </Select>
+      </Grid>
+    </Grid>
+  )
 }
