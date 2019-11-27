@@ -1,13 +1,11 @@
 {
   "scripts": {
-    "start": "parcel serve index.html --port 3000"
+    "start": "parcel index.html"
   },
   "dependencies": {
-    "material-components-web": "^4.0.0",
-    "prettier": "^1.18.2"
+    "material-components-web": "^4.0.0"
   },
   "devDependencies": {
-    "eslint": "^6.6.0",
     "parcel-bundler": "^1.12.4"
   }
 }
