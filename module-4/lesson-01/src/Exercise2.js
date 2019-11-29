@@ -62,9 +62,11 @@ function Form() {
     quotes: false,
     provinces: false,
   })
-  const [selected, setSelected] = React.useState({
-    quotes: null,
-    provinces: null,
+  const [data, setData] = React.useState({
+    fname: "",
+    lname: "",
+    quote: null,
+    province: null,
   })
   const [trumpQuotes, setTrumpQuotes] = React.useState([])
   const [provinces, setProvinces] = React.useState({})
@@ -72,6 +74,7 @@ function Form() {
     display: false,
     province: null,
   })
+  const [needSubmit, setNeedSubmit] = React.useState(true)
 
   React.useEffect(() => {
     if (!isLoaded.quotes) {
@@ -96,10 +99,24 @@ function Form() {
     <section>
       <Grid container direction='row' justify='center' alignItems='center'>
         <Grid item xs={6}>
-          <TextField id='fname' label='First Name' variant='filled' />
+          <TextField
+            id='fname'
+            label='First Name'
+            variant='filled'
+            value={data.fname}
+            onChange={event => setData({...data, fname: event.target.value})}
+            disabled={!needSubmit}
+          />
         </Grid>
         <Grid item xs={6}>
-          <TextField id='lname' label='Last Name' variant='filled' />
+          <TextField
+            id='lname'
+            label='Last Name'
+            variant='filled'
+            value={data.lname}
+            onChange={event => setData({...data, lname: event.target.value})}
+            disabled={!needSubmit}
+          />
         </Grid>
       </Grid>
       <br />
@@ -113,10 +130,11 @@ function Form() {
           {isLoaded.quotes && (
             <Select
               style={{ maxWidth: '100%' }}
-              value={selected.quote || ''}
+              value={data.quote || ''}
               onChange={event => {
-                setSelected({ ...selected, quote: event.target.value })
+                setData({ ...data, quote: event.target.value })
               }}
+              disabled={!needSubmit}
             >
               {trumpQuotes.map((quote, index) => {
                 return (
@@ -145,11 +163,15 @@ function Form() {
           {isLoaded.quotes && (
             <Select
               style={{ maxWidth: '100%' }}
-              value={selected.province || ''}
+              value={data.province || ''}
               onChange={event => {
-                setSelected({ ...selected, province: event.target.value })
-                setProvinceImg({ province: event.target.value.slice(0,2), display: false })
+                setData({ ...data, province: event.target.value })
+                setProvinceImg({
+                  province: event.target.value.slice(0, 2),
+                  display: false,
+                })
               }}
+              disabled={!needSubmit}
             >
               {Object.keys(provinces).map(key => {
                 return (
@@ -170,17 +192,29 @@ function Form() {
         <Button
           variant='outlined'
           color='primary'
-          onClick={() => setProvinceImg({ ...provinceImg, display: true })}
-          disabled={!selected.province}
+          onClick={() => {
+            setNeedSubmit(false)
+            setProvinceImg({ ...provinceImg, display: true })
+          }}
+          disabled={!(data.province && data.fname && data.lname && data.quote) || !needSubmit}
         >
           Get flag
         </Button>
       </Grid>
       <br />
-      {provinceImg.display && (
+      {!needSubmit && (
+        <Grid container direction="column">
+          <Grid item>First Name: {data.fname}</Grid>
+          <Grid item>Last Name: {data.lname}</Grid>
+          <Grid item>Selected Quote: {data.quote}</Grid>
+          <Grid item>Province: {data.province}</Grid>
+        </Grid>
+      )}
+      <br />
+      {!needSubmit && provinceImg.display && (
         <Grid container justify='center' alignItems='center'>
           <Avatar
-            variant="rounded"
+            variant='rounded'
             src={flag_urls[provinceImg.province]}
             style={{ minWidth: '200px', minHeight: '200px' }}
           />
