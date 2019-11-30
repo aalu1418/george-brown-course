@@ -1,0 +1,17 @@
+.App {
+  text-align: center;
+}
+
+.App-Content {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 40px;
+}
+
+.CountDown-Text {
+  font-size: 60pt;
+}
+
+.CountDown-Text-Warn {
+  color: red;
+}
