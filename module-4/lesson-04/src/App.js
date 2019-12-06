@@ -13,6 +13,7 @@ import {
   Link,
   useParams,
   useHistory,
+  useLocation,
 } from 'react-router-dom'
 
 const FOODS = [
@@ -21,7 +22,11 @@ const FOODS = [
     name: 'Tofu',
     labels: ['Vegan', 'Protein', 'Soy', 'No flavor'],
   },
-  { id: 'calamari', name: 'Calamari', labels: ['Seafood', 'Squid', 'Fried'] },
+  {
+    id: 'calamari',
+    name: 'Calamari',
+    labels: ['Seafood', 'Squid', 'Fried'],
+  },
   {
     id: 'brazilian',
     name: 'Brazilian Salad Bowl',
@@ -30,16 +35,28 @@ const FOODS = [
   {
     id: 'hot',
     name: 'Hot Dogs',
-    labels: ['Sandwich', 'Bread-based', 'Pork', 'Mustard'],
+    labels: ['Sandwich', 'Bread-based', 'Chicken', 'Pork', 'Beef', 'Mustard'],
   },
-  { id: 'lasagna', name: 'Lasagna', labels: ['Pasta', 'Beef', 'Cheese'] },
+  {
+    id: 'lasagna',
+    name: 'Lasagna',
+    labels: ['Pasta', 'Beef', 'Chicken', 'Pork', 'Cheese'],
+  },
   {
     id: 'butter',
     name: 'Butter Chicken',
     labels: ['Chicken', 'Curry', 'Spicy'],
   },
-  { id: 'lava', name: 'Lava Cake', labels: ['Dessert', 'Chocolate', 'Sweet'] },
+  {
+    id: 'lava',
+    name: 'Lava Cake',
+    labels: ['Dessert', 'Chocolate', 'Sweet'],
+  },
 ]
+
+function useQuery() {
+  return new URLSearchParams(useLocation().search)
+}
 
 export default function App() {
   return (
@@ -55,12 +72,33 @@ export default function App() {
 }
 
 function AppHeader() {
+  const [username, setUsername] = React.useState(
+    window.localStorage.getItem('username'),
+  )
+
+  React.useEffect(() => {
+    const onStorage = () => {
+      setUsername(window.localStorage.getItem('username'))
+    }
+
+    window.addEventListener('storage', onStorage)
+    return () => {
+      window.removeEventListener('storage', onStorage)
+    }
+  }, [])
+
   return (
     <div className='AppHeader'>
       <Grid container={true} justify='space-between' alignItems='center'>
         <Typography component='h1'>Food Search</Typography>
         <div>
-          <Button>Login</Button>
+          {username ? (
+            <span>{username}</span>
+          ) : (
+            <Button component={Link} to='/login'>
+              Login
+            </Button>
+          )}
         </div>
       </Grid>
     </div>
@@ -70,21 +108,26 @@ function AppHeader() {
 function AppBody() {
   return (
     <Switch>
-      <Route exact={true} path='/food-page/:foodId'>
-        <FoodPage />
-      </Route>
-      <Route exact={true} path='/login'>
-        <LoginPage />
-      </Route>
-      <Route exact={true} path='/'>
-        <FoodResults />
-      </Route>
+      <Route
+        exact={true}
+        path='/food-page/:foodId'
+        render={() => <FoodPage />}
+      />
+      <Route exact={true} path='/login' render={() => <LoginPage />} />
+      <Route exact={true} path='/' render={() => <FoodResults />} />
     </Switch>
   )
 }
 
 function LoginPage() {
   const [username, setUsername] = React.useState('')
+  const history = useHistory()
+
+  const onClickLogIn = () => {
+    window.localStorage.setItem('username', username)
+    history.push('/')
+  }
+
   return (
     <div>
       <Box m={2} />
@@ -97,7 +140,12 @@ function LoginPage() {
         onChange={event => setUsername(event.target.value)}
       />
       <Box m={1} />
-      <Button variant='contained' color='primary'>
+      <Button
+        disabled={!username}
+        variant='contained'
+        color='primary'
+        onClick={onClickLogIn}
+      >
         Log in
       </Button>
     </div>
@@ -105,9 +153,88 @@ function LoginPage() {
 }
 
 function FoodResults() {
+  const [filters, setFilters] = React.useState({
+    chicken: false,
+    pork: false,
+    beef: false,
+    noMeat: false,
+  })
+
+  const filteredFoods = FOODS.filter(food => {
+    if (filters.chicken && !food.labels.includes('Chicken')) {
+      return false
+    }
+
+    if (filters.pork && !food.labels.includes('Pork')) {
+      return false
+    }
+
+    if (filters.beef && !food.labels.includes('Beef')) {
+      return false
+    }
+
+    if (
+      filters.noMeat &&
+      (food.labels.includes('Chicken') ||
+        food.labels.includes('Pork') ||
+        food.labels.includes('Beef') ||
+        food.labels.includes('Squid'))
+    ) {
+      return false
+    }
+
+    return true
+  })
+
+  const onClick = filterName => {
+    setFilters({
+      ...filters,
+      [filterName]: !filters[filterName],
+    })
+  }
+
   return (
     <div>
-      {FOODS.map(food => (
+      <Box m={2} />
+      <Grid container={true} alignItems='center'>
+        <Typography>Meat:</Typography>
+        <Box m={1} />
+        <FilterButton
+          isActive={filters.chicken}
+          onClick={onClick}
+          filterName='chicken'
+        >
+          Chicken
+        </FilterButton>
+        <Box m={1} />
+        <FilterButton
+          onClick={onClick}
+          isActive={filters.pork}
+          filterName='pork'
+        >
+          Pork
+        </FilterButton>
+        <Box m={1} />
+        <FilterButton
+          onClick={onClick}
+          isActive={filters.beef}
+          filterName='beef'
+        >
+          Beef
+        </FilterButton>
+        <Box m={1} />
+        <FilterButton
+          onClick={onClick}
+          isActive={filters.noMeat}
+          filterName='noMeat'
+        >
+          No meat
+        </FilterButton>
+      </Grid>
+
+      <Box m={2} />
+
+      {filteredFoods.map(food => (
         <Paper key={food.id} className='FoodRow'>
           <div className='FoodRow-Image' />
           <Box m={1} />
@@ -151,5 +278,17 @@ function FoodPage() {
       <Typography variant='h6'>Labels:</Typography>
       <Typography>{foundFood.labels.join(', ')}</Typography>
     </div>
+  )
+}
+
+function FilterButton({ children, isActive, onClick, filterName }) {
+  return (
+    <Button
+      variant={isActive ? 'contained' : 'outlined'}
+      color={isActive ? 'primary' : undefined}
+      onClick={() => onClick(filterName)}
+    >
+      {children}
+    </Button>
   )
 }
