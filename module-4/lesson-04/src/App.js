@@ -153,12 +153,27 @@ function LoginPage() {
 }
 
 function FoodResults() {
+  let query = useQuery()
+  let queries = query.get("meat")
+  let queryFilters = {}
+
+  if (queries) {
+    queries = queries.split(",")
+    queries.forEach(key => {
+      queryFilters = {...queryFilters, [key]:true}
+    })
+  }
+
+  // console.log(queryFilters)
+
   const [filters, setFilters] = React.useState({
     chicken: false,
     pork: false,
     beef: false,
     noMeat: false,
+    ...queryFilters
   })
+  const history = useHistory()
 
   const filteredFoods = FOODS.filter(food => {
     if (filters.chicken && !food.labels.includes('Chicken')) {
@@ -192,6 +207,15 @@ function FoodResults() {
       [filterName]: !filters[filterName],
     })
   }
+
+  React.useEffect(() => {
+    const queryString = Object.keys(filters).filter(key => filters[key]).join(",")
+    if (queryString) {
+      history.push(`?meat=${queryString}`)
+    } else {
+      history.push('/')
+    }
+  }, [filters, history])
 
   return (
     <div>
