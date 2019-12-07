@@ -19,7 +19,10 @@
 .AppHeader {
 }
 .AppHeader-Title {
-  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 .AppHeader-Title a {
   color: inherit;
@@ -30,15 +33,38 @@
 }
 
 .Card.MuiPaper-rounded {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 60px 80px;
   width: 100%;
+  min-height: 350px;
 
   border-radius: 20px;
 }
 
-.CardThumbnail.MuiButton-outlined {
+.CardThumbnail-Paper:hover {
+  border: 2pt solid #5c6bc0;
+  color: #5c6bc0;
+}
+
+.CardThumbnail-Paper.MuiButton-outlined {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 15px;
-  width: calc((100% / 5) - 20px);
+  width: 125px;
+  height: 100px;
+}
+
+.CardThumbnail-Paper.MuiButton-outlined.selected {
+  border: 2pt solid #3f51b5;
+  color: #3f51b5;
+}
+
+.CardThumbnail-Link {
+  text-decoration: none;
 }
 
 .CardThumbnail-Text.MuiTypography-body2 {
@@ -49,10 +75,17 @@
 .Card-Body.MuiTypography-h4 {
   font-weight: 600;
   letter-spacing: -1px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .Card-Caption.MuiTypography-body1 {
   font-style: italic;
   color: #999;
   font-weight: 200;
+  text-align: center;
+}
+
+.CardsList {
+  margin: 10px 0px;
 }

@@ -22,7 +22,22 @@ export default function App() {
     <div className='App'>
       <div className='App-Content'>
         <AppHeader />
-
+        <Switch>
+          <Route path='/about-me'>
+            <BlankCard text="Aaron Lu - 101278524" />
+          </Route>
+          <Route path='/'>
+            <CardsList />
+            <Switch>
+              <Route path='/cards/:id'>
+                <Card />
+              </Route>
+              <Route path='/'>
+                <BlankCard text="Select a card to start!" />
+              </Route>
+            </Switch>
+          </Route>
+        </Switch>
         <AppFooter />
       </div>
     </div>
@@ -30,24 +45,109 @@ export default function App() {
 }
 
 function AppHeader() {
+  const history = useHistory();
+
   return (
     <Grid container={true} className='AppHeader'>
       <div className='AppHeader-Title'>
+        <Button variant="outlined" onClick={() => history.goBack()}><ChevronLeft /></Button>
         <Typography variant='h4' component='h1' align='center'>
-          <Link>Flash Cards App</Link>
+          <Link to='/'>Flash Cards App</Link>
         </Typography>
+        <Button variant="outlined" onClick={() => history.goForward()}><ChevronRight /></Button>
       </div>
     </Grid>
   )
 }
 
 function AppFooter() {
+  const location = useLocation()
+  const pathname = location.pathname.split("/")[1]
+
+  const aboutMe = (
+    <Link to='/about-me' style={{ color: 'inherit' }}>
+      About me
+    </Link>
+  )
+
+  const homepage = (
+    <Link to='/' style={{ color: 'inherit' }}>
+      Homepage
+    </Link>
+  )
+
   return (
     <div>
       <Box m={8} />
       <Typography align='center' color='primary'>
-        <Link style={{ color: 'inherit' }}>About me</Link>
+        {pathname === "about-me" ? homepage : aboutMe}
       </Typography>
     </div>
+  )
+}
+
+const CardsList = () => {
+  return (
+    <Grid className="CardsList" container justify='space-between'>
+      {FLASH_CARDS.map(card => (
+        <CardThumbnail key={card.id} card={card} />
+      ))}
+    </Grid>
+  )
+}
+
+const CardThumbnail = ({ card }) => {
+  const location = useLocation()
+
+  // React.useEffect(() => {console.log(location.pathname.split("/")[2])}, [location])
+
+  const className = () => {
+    let string = 'CardThumbnail-Paper MuiButton-outlined'
+    if (card.id === location.pathname.split("/")[2]){
+      string += " selected"
+    }
+    return string
+  }
+
+  return (
+    <Grid item key={card.id}>
+      <Link to={`/cards/${card.id}`} className='CardThumbnail-Link'>
+        <Paper className={className()}>
+          <Typography
+            className='CardThumbnail-Text MuiTypography-body2'
+            variant='button'
+          >
+            {card.title}
+          </Typography>
+        </Paper>
+      </Link>
+    </Grid>
+  )
+}
+
+const Card = () => {
+  const { id } = useParams()
+
+  const card = FLASH_CARDS.filter(card => card.id === id)[0]
+
+  return (
+    <Paper className='Card MuiPaper-rounded'>
+      <Typography className='Card-Body MuiTypography-h4'>
+        {card.body}
+      </Typography>
+      <Typography className='Card-Caption MuiTypography-body1'>
+        {`~ ${card.quote}`}
+      </Typography>
+    </Paper>
+  )
+}
+
+const BlankCard = ({text}) => {
+  return (
+    <Paper className='Card MuiPaper-rounded'>
+      <Typography className='Card-Body MuiTypography-h4'>
+        {text}
+      </Typography>
+    </Paper>
   )
 }
