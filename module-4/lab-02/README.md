@@ -1,3 +1,8 @@
+Name: Aaron Lu  
+ID: 101278524
+
+---
+
 1. Clone this repo
 1. `cd` into this directory
 1. Run `npm install`
