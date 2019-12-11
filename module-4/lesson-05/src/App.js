@@ -64,23 +64,18 @@ function AppBody() {
   )
 }
 
-const withLoggedInState = Component => {
-  return function NewComponent({ isLoggedIn, ...props }) {
-    return (
-      <div>
-        {!isLoggedIn && <Redirect to='/login' />}
-        <Component {...props} />
-      </div>
-    )
-  }
-}
-
-const LoggedInRoute = withLoggedInState(Route)
-
 function HomePage({ isLoggedIn }) {
+  const onClick = async () => {
+    const accounts = await window.ethereum.enable()
+    console.log(accounts)
+  }
+
   return (
     <div>
       <Typography>Homepage</Typography>
+      <Button onClick={onClick} variant='contained' color='primary'>
+        Authorize me!
+      </Button>
     </div>
   )
 }
@@ -106,3 +101,16 @@ function LoginPage({ savedUsername, setSavedUsername }) {
 function ContactPage() {
   return <div>ContactPage</div>
 }
+
+const withLoggedInState = Component => {
+  return function NewComponent({ isLoggedIn, ...props }) {
+    return (
+      <div>
+        {!isLoggedIn && <Redirect to='/login' />}
+        <Component {...props} />
+      </div>
+    )
+  }
+}
+
+const LoggedInRoute = withLoggedInState(Route)
