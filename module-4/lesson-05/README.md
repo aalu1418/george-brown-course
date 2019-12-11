@@ -15,6 +15,9 @@ Links:
 Criteria:
 
 - When "authorizing", handle the rejection case based on error code
+  - Log the user out from local storage
+  - Navigate to the `/` route
+  - Navigate with the `<Redirect />` component
 - Navigate to the `/authorized` route when accepted
-- Navigate to the `/` route when rejected
+  - Navigate with the `<Redirect />` component
 - Navigate to `/` when refreshed on `/authorized`
