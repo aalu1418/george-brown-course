@@ -31,6 +31,8 @@ function AppBody() {
   const [savedUsername, setSavedUsername] = React.useState(
     window.localStorage.getItem('username') || '',
   )
+  const [authorized, setAuthorized] = React.useState(null)
+
   React.useEffect(() => {
     if (savedUsername) {
       window.localStorage.setItem('username', savedUsername)
@@ -56,22 +58,44 @@ function AppBody() {
         render={() => <ContactPage />}
       />
       <LoggedInRoute
+        isLoggedIn={Boolean(savedUsername) && authorized === 'yes'}
+        path='/authorized'
+        render={() => <AuthorizedPage />}
+      />
+      <LoggedInRoute
         isLoggedIn={Boolean(savedUsername)}
         path='/'
-        render={() => <HomePage />}
+        render={() => (
+          <HomePage
+            authorized={authorized}
+            setAuthorized={setAuthorized}
+            setSavedUsername={setSavedUsername}
+          />
+        )}
       />
     </Switch>
   )
 }
 
-function HomePage({ isLoggedIn }) {
+function HomePage({ authorized, setAuthorized, setSavedUsername }) {
   const onClick = async () => {
-    const accounts = await window.ethereum.enable()
-    console.log(accounts)
+    try {
+      const accounts = await window.ethereum.enable()
+      console.log(accounts)
+      setAuthorized('yes')
+    } catch (e) {
+      console.log(e)
+      if (e.code === 4001) {
+        setSavedUsername('')
+        setAuthorized('no')
+      }
+    }
   }
 
   return (
     <div>
+      {authorized === 'yes' && <Redirect to='/authorized' />}
+      {authorized === 'no' && <Redirect to='/' />}
       <Typography>Homepage</Typography>
       <Button onClick={onClick} variant='contained' color='primary'>
         Authorize me!
@@ -100,6 +124,10 @@ function LoginPage({ savedUsername, setSavedUsername }) {
 
 function ContactPage() {
   return <div>ContactPage</div>
+}
+
+const AuthorizedPage = () => {
+  return <div>Authorized</div>
 }
 
 const withLoggedInState = Component => {
