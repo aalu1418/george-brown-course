@@ -1,0 +1,35 @@
+[
+  {
+    "id": "simple",
+    "title": "Simple as possible",
+    "body": "Everything should be made as simple as possible, but not simpler.",
+    "quote": "Albert Einstein"
+  },
+  {
+    "id": "health",
+    "title": "Health",
+    "body":
+      "The only way to keep your health is to eat what you don’t want, drink what you don’t like, and do what you’d rather not.",
+    "quote": "Mark Twain"
+  },
+  {
+    "id": "poor-man",
+    "title": "Poor man",
+    "body": "I’d like to live like a poor man – only with lots of money.",
+    "quote": "Pablo Picasso"
+  },
+  {
+    "id": "opinions",
+    "title": "Strong opinions",
+    "body":
+      "I have opinions of my own – strong opinions – but I don’t always agree with them.",
+    "quote": "George W. Bush"
+  },
+  {
+    "id": "auto-correct",
+    "title": "Auto correct",
+    "body":
+      "When is my phone going to learn that I never, ever meant to write “ducked up”.",
+    "quote": "Olivia Wilde"
+  }
+]
