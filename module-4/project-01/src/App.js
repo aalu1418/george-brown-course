@@ -170,10 +170,7 @@ const PageContainer = ({
         justify='space-between'
       >
         {showPrevious && (
-          <Button
-            disabled={previousDisable}
-            onClick={() => history.goBack()}
-          >
+          <Button disabled={previousDisable} onClick={() => history.goBack()}>
             {isSummary ? 'Go Back' : 'Previous'}
           </Button>
         )}
@@ -184,9 +181,10 @@ const PageContainer = ({
             disabled={continueDisable}
             onClick={onContinueClick}
           >
-            {isSummary ? submitButton : 'Continue'}
+            Continue
           </Button>
         )}
+        {isSummary && <Button onClick={onContinueClick}>{submitButton}</Button>}
       </Grid>
     </Grid>
   )
@@ -211,7 +209,7 @@ const LoginPage = ({ state }) => {
       continueTo='/voting/1'
       continueDisable={!state.values.username}
       onContinueClick={writeToStorage}
-      showPrevious= {false}
+      showPrevious={false}
     >
       {localStorage.getItem('m4p1-username') && <Redirect to='/voting/1' />}
       <QuestionContainer label='To begin your voting application, please enter a username:'>
@@ -284,6 +282,10 @@ const Part2 = ({ state }) => {
     >
       <QuestionContainer label='When is your birthday?'>
         <KeyboardDatePicker
+          autoOk
+          disableFuture
+          emptyLabel='MM/DD/YYYY'
+          inputVariant='outlined'
           name='birthday'
           variant='inline'
           format='MM/dd/yyyy'
@@ -340,10 +342,7 @@ const Part3 = ({ state }) => {
     },
   ]
   return (
-    <PageContainer
-      title='Part 3'
-      continueTo='/voting/summary'
-    >
+    <PageContainer title='Part 3' continueTo='/voting/summary'>
       <QuestionContainer label='What is your ideal room temperature?'>
         <Slider
           value={state.values.temperature}
@@ -363,6 +362,7 @@ const Part3 = ({ state }) => {
 }
 
 const Summary = ({ state }) => {
+  const history = useHistory()
   const QuestionResponse = ({ text }) => {
     return <Typography variant='body1'>{text}</Typography>
   }
@@ -374,8 +374,10 @@ const Summary = ({ state }) => {
   return (
     <PageContainer
       title='Summary'
-      continueTo='/results'
-      onContinueClick={() => saveFirestore(state)}
+      onContinueClick={() => {
+        saveFirestore(state)
+        history.push('/results')
+      }}
     >
       <QuestionContainer label='Who is your favorite candidate?'>
         <QuestionResponse text={CANDIDATE_NAME[state.values.candidate]} />
@@ -422,11 +424,11 @@ const Results = () => {
   })
 
   const [sortedBirthdays, setSortedBirthdays] = React.useState({
-    "19-or-less" : 0,
-    "20-to-29": 0,
-    "30-to-39": 0,
-    "40-to-49": 0,
-    "50-or-more": 0
+    '19-or-less': 0,
+    '20-to-29': 0,
+    '30-to-39': 0,
+    '40-to-49': 0,
+    '50-or-more': 0,
   })
 
   React.useEffect(() => {
@@ -446,17 +448,18 @@ const Results = () => {
   React.useEffect(() => {
     const age = Object.keys(data.birthday).map(birthday => {
       birthday = new Date(String(birthday))
-      return Math.floor((Date.now() - birthday.getTime())/(1000*60*60*24*365.25))
+      return Math.floor(
+        (Date.now() - birthday.getTime()) / (1000 * 60 * 60 * 24 * 365.25),
+      )
     })
 
     setSortedBirthdays({
-      "19-or-less" : age.filter(x => x < 20).length,
-      "20-to-29": age.filter(x => x >= 20 && x < 30).length,
-      "30-to-39": age.filter(x => x >= 30 && x < 40).length,
-      "40-to-49": age.filter(x => x >= 40 && x < 50).length,
-      "50-or-more": age.filter(x => x >= 50).length
+      '19-or-less': age.filter(x => x < 20).length,
+      '20-to-29': age.filter(x => x >= 20 && x < 30).length,
+      '30-to-39': age.filter(x => x >= 30 && x < 40).length,
+      '40-to-49': age.filter(x => x >= 40 && x < 50).length,
+      '50-or-more': age.filter(x => x >= 50).length,
     })
-
   }, [data.birthday])
 
   return (
@@ -480,9 +483,9 @@ const Results = () => {
           </QuestionContainer>
           <QuestionContainer label='Age groups:'>
             {Object.keys(sortedBirthdays).map(key => (
-              <div
-                key={key}
-              >{`${key.split("-").join(" ")}: ${sortedBirthdays[key]}`}</div>
+              <div key={key}>{`${key.split('-').join(' ')}: ${
+                sortedBirthdays[key]
+              }`}</div>
             ))}
           </QuestionContainer>
           <QuestionContainer label='Province:'>
