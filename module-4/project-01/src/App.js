@@ -1,6 +1,8 @@
 import './App.css'
 import React from 'react'
-import firebase from 'firebase'
+// import firebase from 'firebase'
+import * as firebase from 'firebase/app'
+import 'firebase/firestore'
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Box from '@material-ui/core/Box'
@@ -41,6 +43,7 @@ import {
 } from './constants'
 
 const NETWORK = 'goerli'
+
 
 export default function App() {
   const [values, setValues] = React.useState({
@@ -370,7 +373,7 @@ const Summary = ({ state }) => {
     : `${state.values.birthday.getMonth()}/${state.values.birthday.getDay()}/${state.values.birthday.getFullYear()}`
 
   return (
-    <PageContainer title='Summary' continueTo='/results' previousTo='/voting/3'>
+    <PageContainer title='Summary' continueTo='/results' previousTo='/voting/3' onContinueClick={ () => saveFirestore(state)}>
       <QuestionContainer label='Who is your favorite candidate?'>
         <QuestionResponse text={CANDIDATE_NAME[state.values.candidate]} />
       </QuestionContainer>
@@ -428,5 +431,24 @@ const conditionalRedirect = Component => {
     )
   }
 }
-
 const CheckedRoute = conditionalRedirect(Route)
+
+const saveFirestore = (state) => {
+  var db = firebase.firestore();
+  const incrementProps = ["candidate", "happiness", "province", "temperature"]
+  incrementProps.forEach(property => {
+    const dbRef = db.collection('voting').doc(property)
+    const  fieldName = String(state.values[property])
+    dbRef.update({
+      [fieldName] : firebase.firestore.FieldValue.increment(1)
+    })
+  })
+
+  const bdayRef = db.collection('voting').doc('birthday')
+  bdayRef.set({
+    [state.values.birthday] : null
+  })
+
+
+
+}
