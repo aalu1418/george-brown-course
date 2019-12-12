@@ -44,7 +44,6 @@ import {
 
 const NETWORK = 'goerli'
 
-
 export default function App() {
   const [values, setValues] = React.useState({
     username: localStorage.getItem('m4p1-username') || '',
@@ -53,8 +52,8 @@ export default function App() {
     birthday: null,
     province: '',
     temperature: 20,
-    "donate-candidate" : "",
-    "donate-charity" : "",
+    'donate-candidate': '',
+    'donate-charity': '',
   })
   const set = event => {
     setValues({ ...values, [event.target.name]: event.target.value.trim() })
@@ -67,54 +66,50 @@ export default function App() {
         <div className='App'>
           <div className='App-Content'>
             <Solution />
-            <CheckedRoute
-              exact
-              path='/voting/1'
-              condition={!userData.values.username}
-              render={() => <Part1 state={userData} />}
-            />
-            <CheckedRoute
-              exact
-              path='/voting/2'
-              condition={
-                !userData.values.username ||
-                !userData.values.candidate ||
-                !userData.values.happiness
-              }
-              render={() => <Part2 state={userData} />}
-            />
-            <CheckedRoute
-              exact
-              path='/voting/3'
-              condition={
-                !userData.values.username ||
-                !userData.values.birthday ||
-                !userData.values.province
-              }
-              render={() => <Part3 state={userData} />}
-            />
-            <CheckedRoute
-              exact
-              path='/voting/summary'
-              condition={
-                !userData.values.username ||
-                !userData.values.birthday ||
-                !userData.values.province
-              }
-              render={() => <Summary state={userData} />}
-            />
-            <CheckedRoute
-              exact
-              path='/results'
-              condition={!userData.values.username}
-              render={() => <Results />}
-            />
-            <CheckedRoute
-              exact
-              path='/'
-              condition={false}
-              render={() => <LoginPage state={userData} />}
-            />
+            <Switch>
+              <CheckedRoute
+                path='/voting/1'
+                condition={!userData.values.username}
+                render={() => <Part1 state={userData} />}
+              />
+              <CheckedRoute
+                path='/voting/2'
+                condition={
+                  !userData.values.username ||
+                  !userData.values.candidate ||
+                  !userData.values.happiness
+                }
+                render={() => <Part2 state={userData} />}
+              />
+              <CheckedRoute
+                path='/voting/3'
+                condition={
+                  !userData.values.username ||
+                  !userData.values.birthday ||
+                  !userData.values.province
+                }
+                render={() => <Part3 state={userData} />}
+              />
+              <CheckedRoute
+                path='/voting/summary'
+                condition={
+                  !userData.values.username ||
+                  !userData.values.birthday ||
+                  !userData.values.province
+                }
+                render={() => <Summary state={userData} />}
+              />
+              <CheckedRoute
+                path='/results'
+                condition={!userData.values.username}
+                render={() => <Results />}
+              />
+              <CheckedRoute
+                path='/'
+                condition={false}
+                render={() => <LoginPage state={userData} />}
+              />
+            </Switch>
           </div>
         </div>
       </MuiPickersUtilsProvider>
@@ -150,14 +145,19 @@ const PageContainer = ({
   title,
   children,
   continueTo,
-  previousTo,
+  showPrevious = true,
   continueDisable,
   previousDisable = false,
   onContinueClick = () => null,
 }) => {
   let location = useLocation()
-  const isSummary = location.pathname.split("/")[2] === "summary"
-  const submitButton = <span><DoneAllIcon /> Cast Votes</span>
+  let history = useHistory()
+  const isSummary = location.pathname.split('/')[2] === 'summary'
+  const submitButton = (
+    <span>
+      <DoneAllIcon /> Cast Votes
+    </span>
+  )
 
   return (
     <Grid container direction='column' justify='center' alignItems='flex-start'>
@@ -166,16 +166,15 @@ const PageContainer = ({
       <Grid
         style={{ width: '100%' }}
         container
-        direction={isSummary? 'column-reverse' : 'row'}
+        direction={isSummary ? 'column-reverse' : 'row'}
         justify='space-between'
       >
-        {previousTo && (
+        {showPrevious && (
           <Button
-            to={previousTo}
-            component={RouterLink}
             disabled={previousDisable}
+            onClick={() => history.goBack()}
           >
-            { isSummary? "Go Back" : "Previous"}
+            {isSummary ? 'Go Back' : 'Previous'}
           </Button>
         )}
         {continueTo && (
@@ -185,7 +184,7 @@ const PageContainer = ({
             disabled={continueDisable}
             onClick={onContinueClick}
           >
-            {isSummary ?  submitButton : "Continue"}
+            {isSummary ? submitButton : 'Continue'}
           </Button>
         )}
       </Grid>
@@ -212,6 +211,7 @@ const LoginPage = ({ state }) => {
       continueTo='/voting/1'
       continueDisable={!state.values.username}
       onContinueClick={writeToStorage}
+      showPrevious= {false}
     >
       {localStorage.getItem('m4p1-username') && <Redirect to='/voting/1' />}
       <QuestionContainer label='To begin your voting application, please enter a username:'>
@@ -232,7 +232,6 @@ const Part1 = ({ state }) => {
     <PageContainer
       title='Part 1'
       continueTo='/voting/2'
-      previousTo='/'
       previousDisable={true}
       continueDisable={!state.values.candidate || !state.values.happiness}
     >
@@ -281,7 +280,6 @@ const Part2 = ({ state }) => {
     <PageContainer
       title='Part 2'
       continueTo='/voting/3'
-      previousTo='/voting/1'
       continueDisable={!state.values.birthday || !state.values.province}
     >
       <QuestionContainer label='When is your birthday?'>
@@ -325,27 +323,26 @@ const Part2 = ({ state }) => {
 const Part3 = ({ state }) => {
   const marks = [
     {
-      value: 0,
-      label: '0°C',
+      value: -10,
+      label: '-10°C',
     },
     {
-      value: 20,
-      label: '20°C',
+      value: 10,
+      label: '10°C',
     },
     {
-      value: 37,
-      label: '37°C',
+      value: 30,
+      label: '30°C',
     },
     {
-      value: 100,
-      label: '100°C',
+      value: 50,
+      label: '50°C',
     },
   ]
   return (
     <PageContainer
       title='Part 3'
       continueTo='/voting/summary'
-      previousTo='/voting/2'
     >
       <QuestionContainer label='What is your ideal room temperature?'>
         <Slider
@@ -354,9 +351,11 @@ const Part3 = ({ state }) => {
             state.setValues({ ...state.values, temperature: value })
           }
           aria-labelledby='temperature-slider'
-          step={2}
+          step={5}
           valueLabelDisplay='auto'
           marks={marks}
+          min={-10}
+          max={50}
         />
       </QuestionContainer>
     </PageContainer>
@@ -373,7 +372,11 @@ const Summary = ({ state }) => {
     : `${state.values.birthday.getMonth()}/${state.values.birthday.getDay()}/${state.values.birthday.getFullYear()}`
 
   return (
-    <PageContainer title='Summary' continueTo='/results' previousTo='/voting/3' onContinueClick={ () => saveFirestore(state)}>
+    <PageContainer
+      title='Summary'
+      continueTo='/results'
+      onContinueClick={() => saveFirestore(state)}
+    >
       <QuestionContainer label='Who is your favorite candidate?'>
         <QuestionResponse text={CANDIDATE_NAME[state.values.candidate]} />
       </QuestionContainer>
@@ -390,19 +393,19 @@ const Summary = ({ state }) => {
         <QuestionResponse text={`${state.values.temperature} ${'\u00b0'}C`} />
       </QuestionContainer>
       <TextField
-        name="donate-candidate"
-        type="number"
+        name='donate-candidate'
+        type='number'
         variant='outlined'
         label='Donate ETH to your candidate (optional)'
-        value={state.values["donate-candidate"]}
+        value={state.values['donate-candidate']}
         onChange={state.set}
       ></TextField>
       <TextField
-        name="donate-charity"
-        type="number"
+        name='donate-charity'
+        type='number'
         variant='outlined'
         label='Donate ETH to charity (optional)'
-        value={state.values["donate-charity"]}
+        value={state.values['donate-charity']}
         onChange={state.set}
       ></TextField>
     </PageContainer>
@@ -410,13 +413,94 @@ const Summary = ({ state }) => {
 }
 
 const Results = () => {
+  const [data, setData] = React.useState({
+    candidate: {},
+    birthday: {},
+    happiness: {},
+    province: {},
+    temperature: {},
+  })
+
+  const [sortedBirthdays, setSortedBirthdays] = React.useState({
+    "19-or-less" : 0,
+    "20-to-29": 0,
+    "30-to-39": 0,
+    "40-to-49": 0,
+    "50-or-more": 0
+  })
+
+  React.useEffect(() => {
+    const db = firebase.firestore()
+
+    const unsubscribe = db.collection('voting').onSnapshot(data => {
+      let dataObj = {}
+      data.docs.forEach(doc => {
+        dataObj = { ...dataObj, [doc.id]: doc.data() }
+      })
+      setData(dataObj)
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  React.useEffect(() => {
+    const age = Object.keys(data.birthday).map(birthday => {
+      birthday = new Date(String(birthday))
+      return Math.floor((Date.now() - birthday.getTime())/(1000*60*60*24*365.25))
+    })
+
+    setSortedBirthdays({
+      "19-or-less" : age.filter(x => x < 20).length,
+      "20-to-29": age.filter(x => x >= 20 && x < 30).length,
+      "30-to-39": age.filter(x => x >= 30 && x < 40).length,
+      "40-to-49": age.filter(x => x >= 40 && x < 50).length,
+      "50-or-more": age.filter(x => x >= 50).length
+    })
+
+  }, [data.birthday])
+
   return (
-    <PageContainer title='Results'>
-      <QuestionContainer label='Favorite candidate:'></QuestionContainer>
-      <QuestionContainer label='Progress:'></QuestionContainer>
-      <QuestionContainer label='Age groups:'></QuestionContainer>
-      <QuestionContainer label='Province:'></QuestionContainer>
-      <QuestionContainer label='Ideal room temperature:'></QuestionContainer>
+    <PageContainer title='Results' showPrevious={false}>
+      {Object.keys(data.candidate).length === 0 && <CircularProgress />}
+      {Object.keys(data.candidate).length !== 0 && (
+        <div>
+          <QuestionContainer label='Favorite candidate:'>
+            {Object.keys(data.candidate).map(key => (
+              <div
+                key={key}
+              >{`${CANDIDATE_NAME[key]}: ${data.candidate[key]}`}</div>
+            ))}
+          </QuestionContainer>
+          <QuestionContainer label='Progress:'>
+            {Object.keys(data.happiness).map(key => (
+              <div
+                key={key}
+              >{`${HAPPINESS_LABEL[key]}: ${data.happiness[key]}`}</div>
+            ))}
+          </QuestionContainer>
+          <QuestionContainer label='Age groups:'>
+            {Object.keys(sortedBirthdays).map(key => (
+              <div
+                key={key}
+              >{`${key.split("-").join(" ")}: ${sortedBirthdays[key]}`}</div>
+            ))}
+          </QuestionContainer>
+          <QuestionContainer label='Province:'>
+            {Object.keys(data.province).map(key => {
+              const province = PROVINCES.filter(obj => obj.code === key)[0]
+
+              return (
+                <div key={key}>{`${province.name}: ${data.province[key]}`}</div>
+              )
+            })}
+          </QuestionContainer>
+          <QuestionContainer label='Ideal room temperature:'>
+            {Object.keys(data.temperature).map(key => (
+              <div key={key}>{`${key}°C: ${data.temperature[key]}`}</div>
+            ))}
+          </QuestionContainer>
+        </div>
+      )}
     </PageContainer>
   )
 }
@@ -433,22 +517,19 @@ const conditionalRedirect = Component => {
 }
 const CheckedRoute = conditionalRedirect(Route)
 
-const saveFirestore = (state) => {
-  var db = firebase.firestore();
-  const incrementProps = ["candidate", "happiness", "province", "temperature"]
+const saveFirestore = state => {
+  const db = firebase.firestore()
+  const incrementProps = ['candidate', 'happiness', 'province', 'temperature']
   incrementProps.forEach(property => {
     const dbRef = db.collection('voting').doc(property)
-    const  fieldName = String(state.values[property])
+    const fieldName = String(state.values[property])
     dbRef.update({
-      [fieldName] : firebase.firestore.FieldValue.increment(1)
+      [fieldName]: firebase.firestore.FieldValue.increment(1),
     })
   })
 
   const bdayRef = db.collection('voting').doc('birthday')
-  bdayRef.set({
-    [state.values.birthday] : null
+  bdayRef.update({
+    [state.values.birthday]: null,
   })
-
-
-
 }
