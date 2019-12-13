@@ -168,34 +168,71 @@ const PageContainer = ({
         container
         direction={isSummary ? 'column-reverse' : 'row'}
         justify='space-between'
+        alignItems='center'
       >
         {showPrevious && (
-          <Button disabled={previousDisable} onClick={() => history.goBack()}>
+          <FormattedButton
+            disabled={previousDisable}
+            onClick={() => history.goBack()}
+          >
             {isSummary ? 'Go Back' : 'Previous'}
-          </Button>
+          </FormattedButton>
         )}
         {continueTo && (
-          <Button
+          <FormattedButton
             to={continueTo}
             component={RouterLink}
             disabled={continueDisable}
             onClick={onContinueClick}
+            color='primary'
           >
             Continue
-          </Button>
+          </FormattedButton>
         )}
-        {isSummary && <Button onClick={onContinueClick}>{submitButton}</Button>}
+        {isSummary && (
+          <FormattedButton
+            onClick={onContinueClick}
+            color='primary'
+            style={{ width: '200px', height: '50px'}}
+          >
+            {submitButton}
+          </FormattedButton>
+        )}
       </Grid>
     </Grid>
   )
 }
 
+const FormattedButton = ({ ...params }) => {
+  return (
+    <Box my={2}>
+      <Button style={{ width: '100px' }} variant='contained' {...params} />
+    </Box>
+  )
+}
+
 const QuestionContainer = ({ label, children }) => {
   return (
-    <div>
+    <Box my={2}>
       <Typography variant='subtitle1'>{label}</Typography>
       {children}
-    </div>
+    </Box>
+  )
+}
+
+const QuestionResponse = ({ text }) => {
+  return (
+    <Box color='#1a237e'>
+      <Typography variant='body1'>{text}</Typography>
+    </Box>
+  )
+}
+
+const FormattedTextField = ({ ...params }) => {
+  return (
+    <Box my={1} width='400px'>
+      <TextField {...params} style={{ width: '100%' }} />
+    </Box>
   )
 }
 
@@ -213,7 +250,7 @@ const LoginPage = ({ state }) => {
     >
       {localStorage.getItem('m4p1-username') && <Redirect to='/voting/1' />}
       <QuestionContainer label='To begin your voting application, please enter a username:'>
-        <TextField
+        <FormattedTextField
           variant='outlined'
           label='Username'
           name='username'
@@ -363,13 +400,16 @@ const Part3 = ({ state }) => {
 
 const Summary = ({ state }) => {
   const history = useHistory()
-  const QuestionResponse = ({ text }) => {
-    return <Typography variant='body1'>{text}</Typography>
-  }
 
   const birthdayParse = !state.values.birthday
     ? ' '
-    : `${state.values.birthday.getMonth()}/${state.values.birthday.getDay()}/${state.values.birthday.getFullYear()}`
+    : `${state.values.birthday.getMonth() +
+        1}/${state.values.birthday.getDay() +
+        1}/${state.values.birthday.getFullYear()}`
+
+  let provinceParse = PROVINCES.filter(
+    obj => obj.code === state.values.province,
+  )[0]
 
   return (
     <PageContainer
@@ -389,27 +429,27 @@ const Summary = ({ state }) => {
         <QuestionResponse text={birthdayParse} />
       </QuestionContainer>
       <QuestionContainer label='Which province do you reside in?'>
-        <QuestionResponse text={PROVINCES[state.values.province]} />
+        <QuestionResponse text={provinceParse ? provinceParse.name : ''} />
       </QuestionContainer>
       <QuestionContainer label='What is your ideal room temperature?'>
         <QuestionResponse text={`${state.values.temperature} ${'\u00b0'}C`} />
       </QuestionContainer>
-      <TextField
+      <FormattedTextField
         name='donate-candidate'
         type='number'
         variant='outlined'
         label='Donate ETH to your candidate (optional)'
         value={state.values['donate-candidate']}
         onChange={state.set}
-      ></TextField>
-      <TextField
+      />
+      <FormattedTextField
         name='donate-charity'
         type='number'
         variant='outlined'
         label='Donate ETH to charity (optional)'
         value={state.values['donate-charity']}
         onChange={state.set}
-      ></TextField>
+      />
     </PageContainer>
   )
 }
@@ -469,23 +509,26 @@ const Results = () => {
         <div>
           <QuestionContainer label='Favorite candidate:'>
             {Object.keys(data.candidate).map(key => (
-              <div
+              <QuestionResponse
                 key={key}
-              >{`${CANDIDATE_NAME[key]}: ${data.candidate[key]}`}</div>
+                text={`${CANDIDATE_NAME[key]}: ${data.candidate[key]}`}
+              />
             ))}
           </QuestionContainer>
           <QuestionContainer label='Progress:'>
             {Object.keys(data.happiness).map(key => (
-              <div
+              <QuestionResponse
                 key={key}
-              >{`${HAPPINESS_LABEL[key]}: ${data.happiness[key]}`}</div>
+                text={`${HAPPINESS_LABEL[key]}: ${data.happiness[key]}`}
+              />
             ))}
           </QuestionContainer>
           <QuestionContainer label='Age groups:'>
             {Object.keys(sortedBirthdays).map(key => (
-              <div key={key}>{`${key.split('-').join(' ')}: ${
-                sortedBirthdays[key]
-              }`}</div>
+              <QuestionResponse
+                key={key}
+                text={`${key.split('-').join(' ')}: ${sortedBirthdays[key]}`}
+              />
             ))}
           </QuestionContainer>
           <QuestionContainer label='Province:'>
@@ -493,13 +536,19 @@ const Results = () => {
               const province = PROVINCES.filter(obj => obj.code === key)[0]
 
               return (
-                <div key={key}>{`${province.name}: ${data.province[key]}`}</div>
+                <QuestionResponse
+                  key={key}
+                  text={`${province.name}: ${data.province[key]}`}
+                />
               )
             })}
           </QuestionContainer>
           <QuestionContainer label='Ideal room temperature:'>
             {Object.keys(data.temperature).map(key => (
-              <div key={key}>{`${key}°C: ${data.temperature[key]}`}</div>
+              <QuestionResponse
+                key={key}
+                text={`${key}°C: ${data.temperature[key]}`}
+              />
             ))}
           </QuestionContainer>
         </div>
