@@ -44,6 +44,7 @@ import {
 
 const NETWORK = 'goerli'
 
+//main component (holds state & handles routing)
 export default function App() {
   const [values, setValues] = React.useState({
     username: localStorage.getItem('m4p1-username') || '',
@@ -58,7 +59,7 @@ export default function App() {
   const set = event => {
     setValues({ ...values, [event.target.name]: event.target.value.trim() })
   }
-  const userData = { values, set, setValues }
+  const userData = { values, set, setValues } //object for modifiying userdata state
 
   return (
     <BrowserRouter>
@@ -117,11 +118,12 @@ export default function App() {
   )
 }
 
+//component for the header (title & back button)
 function Solution() {
   let location = useLocation()
   const showBack = !['/', '/voting/1', '/voting/summary'].includes(
     location.pathname,
-  )
+  ) //conditional for showing the back button
 
   return (
     <div>
@@ -144,6 +146,7 @@ function Solution() {
   )
 }
 
+//component for page container (has the next & previous button + title)
 const PageContainer = ({
   title,
   children,
@@ -155,13 +158,16 @@ const PageContainer = ({
 }) => {
   let location = useLocation()
   let history = useHistory()
-  const isSummary = location.pathname.split('/')[2] === 'summary'
+  const isSummary = location.pathname.split('/')[2] === 'summary' //checks if route is summary
+
+  //component for the Cast Votes button
   const submitButton = (
     <Grid container direction='row' justify='space-around' alignItems='center'>
       <DoneAllIcon /> Cast Votes
     </Grid>
   )
 
+  //shows buttons depending on page and parameter conditions
   return (
     <Grid container direction='column' justify='center' alignItems='flex-start'>
       <Box my={1}>
@@ -209,6 +215,7 @@ const PageContainer = ({
   )
 }
 
+//component for wrapping button & formats
 const FormattedButton = ({ ...params }) => {
   return (
     <Box my={2}>
@@ -217,6 +224,7 @@ const FormattedButton = ({ ...params }) => {
   )
 }
 
+//component for wrapping questions & answers with formatting
 const QuestionContainer = ({ label, children }) => {
   return (
     <Box my={1} style={{ width: '100%' }}>
@@ -229,6 +237,7 @@ const QuestionContainer = ({ label, children }) => {
   )
 }
 
+//question response formatting wrapper
 const QuestionResponse = ({ text }) => {
   return (
     <Box color='#1a237e'>
@@ -237,6 +246,7 @@ const QuestionResponse = ({ text }) => {
   )
 }
 
+//component for formatting textfield
 const FormattedTextField = ({ ...params }) => {
   return (
     <Box my={1} width='400px'>
@@ -245,6 +255,7 @@ const FormattedTextField = ({ ...params }) => {
   )
 }
 
+//component for login page
 const LoginPage = ({ state }) => {
   const writeToStorage = () => {
     localStorage.setItem('m4p1-username', state.values.username)
@@ -271,6 +282,7 @@ const LoginPage = ({ state }) => {
   )
 }
 
+//component for part1 of voting
 const Part1 = ({ state }) => {
   return (
     <PageContainer
@@ -319,6 +331,7 @@ const Part1 = ({ state }) => {
   )
 }
 
+//component for part2 of voting
 const Part2 = ({ state }) => {
   return (
     <PageContainer
@@ -368,7 +381,9 @@ const Part2 = ({ state }) => {
   )
 }
 
+//component for part3 of voting
 const Part3 = ({ state }) => {
+  //marks array for slider
   const marks = [
     {
       value: -10,
@@ -407,16 +422,21 @@ const Part3 = ({ state }) => {
   )
 }
 
+//component for summary page
 const Summary = ({ state }) => {
   const history = useHistory()
+
+  //changes depending on submit click and if transactions are successful
   const [disableVote, setDisableVote] = React.useState(false)
 
+  //converts birthday time object to string of MM/DD/YYYY
   const birthdayParse = !state.values.birthday
     ? ' '
     : `${state.values.birthday.getMonth() +
         1}/${state.values.birthday.getDay() +
         1}/${state.values.birthday.getFullYear()}`
 
+  //pulls the province name using the province code
   let provinceParse = PROVINCES.filter(
     obj => obj.code === state.values.province,
   )[0]
@@ -425,6 +445,7 @@ const Summary = ({ state }) => {
     <PageContainer
       title='Summary'
       onContinueClick={async () => {
+        //set message for donation transaction
         const messageGenerator = () => {
           if (Number(state.values['donate-charity']) > 0) {
             return 'charity'
@@ -435,6 +456,8 @@ const Summary = ({ state }) => {
           }
         }
         setDisableVote(true)
+
+        //send ethereum transaction
         await sendTransaction({
           valueInEth:
             state.values['donate-charity'] ||
@@ -445,6 +468,7 @@ const Summary = ({ state }) => {
           message: messageGenerator(),
         })
           .then(() => {
+            //on success
             saveFirestore(state)
             state.setValues({
               username: localStorage.getItem('m4p1-username') || '',
@@ -459,12 +483,14 @@ const Summary = ({ state }) => {
             history.push('/results')
           })
           .catch(() => {
-            setDisableVote(false)
+            //on failture
+            setDisableVote(false) //renables submit button
           })
       }}
       continueDisable={disableVote}
     >
-      {disableVote && (
+      { //shows an overaly with the loading spinner
+        disableVote && (
         <Grid
           style={{
             position: 'fixed',
@@ -519,7 +545,9 @@ const Summary = ({ state }) => {
   )
 }
 
+//component for results page
 const Results = () => {
+  //state for data from firestore
   const [data, setData] = React.useState({
     candidate: {},
     birthday: {},
@@ -528,6 +556,7 @@ const Results = () => {
     temperature: {},
   })
 
+  //state for tallying birthdays
   const [sortedBirthdays, setSortedBirthdays] = React.useState({
     '19-or-less': 0,
     '20-to-29': 0,
@@ -536,6 +565,7 @@ const Results = () => {
     '50-or-more': 0,
   })
 
+  //on page load, create listener for checking for data
   React.useEffect(() => {
     const db = firebase.firestore()
 
@@ -550,6 +580,7 @@ const Results = () => {
     return () => unsubscribe()
   }, [])
 
+  //whenever birthday data is updated, update the sorted list
   React.useEffect(() => {
     const age = Object.keys(data.birthday).map(birthday => {
       birthday = new Date(String(birthday))
@@ -569,7 +600,8 @@ const Results = () => {
 
   return (
     <PageContainer title='Results' showPrevious={false}>
-      {Object.keys(data.candidate).length === 0 && (
+      { //loading spinner when data is being populated
+        Object.keys(data.candidate).length === 0 && (
         <Grid
           style={{ width: '100%', height: '50vh' }}
           container
@@ -631,6 +663,7 @@ const Results = () => {
   )
 }
 
+//create a new component based on a conditional redirect
 const conditionalRedirect = Component => {
   return function NewComponent({ condition, ...props }) {
     return (
@@ -641,11 +674,13 @@ const conditionalRedirect = Component => {
     )
   }
 }
-const CheckedRoute = conditionalRedirect(Route)
+const CheckedRoute = conditionalRedirect(Route) //create new component for Route
 
+//function to save state to firestore
 const saveFirestore = state => {
   const db = firebase.firestore()
   const incrementProps = ['candidate', 'happiness', 'province', 'temperature']
+  //only increment for specific states
   incrementProps.forEach(property => {
     const dbRef = db.collection('voting').doc(property)
     const fieldName = String(state.values[property])
@@ -654,13 +689,15 @@ const saveFirestore = state => {
     })
   })
 
+  //add birthday to firestore
   const bdayRef = db.collection('voting').doc('birthday')
   bdayRef.update({
     [state.values.birthday]: null,
   })
 }
 
-const sendTransaction = ({ toAddress, gas, valueInEth, message }) =>
+//function to send transaction on ethereum
+const sendTransaction = ({ toAddress, gas, valueInEth, message }) => //return promise for async/await
   new Promise(async (resolve, reject) => {
     try {
       const accounts = await window.ethereum.enable()
@@ -673,7 +710,7 @@ const sendTransaction = ({ toAddress, gas, valueInEth, message }) =>
         gas: ethers.utils.hexlify(gas),
         gasPrice: gasPrice.toHexString(),
         value: ethers.utils.parseEther(valueInEth).toHexString(),
-        data:
+        data: //logic for creating hex string
           message.trim() !== ''
             ? ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message))
             : '',
