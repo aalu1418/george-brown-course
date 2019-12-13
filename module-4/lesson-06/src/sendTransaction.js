@@ -22,7 +22,6 @@ export default async function sendTransaction({ valueInEth, gas, toAddress, mess
     transactionParameters = {...transactionParameters, data: messageHash }
   }
 
-
   console.log('Sending transaction with params:', transactionParameters)
   const response = await window.ethereum.send('eth_sendTransaction', [
     transactionParameters,

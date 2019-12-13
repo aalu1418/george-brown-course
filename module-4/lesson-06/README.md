@@ -8,8 +8,8 @@
 
 Criteria:
 
-- Update the function to accept a `fromAddress`
+- Update the function to accept a `toAddress`
 - Update the function to accept an optional `message`
 - Convert the `message` using the ethers.js util
   - Only when there is a `message`
-  - https://docs.ethers.io/ethers.js/html/api-utils.html#hash-function-helpers
+  - https://docs.ethers.io/ethers.js/html/api-utils.html
