@@ -37,6 +37,8 @@ function AppBody() {
     await sendTransaction({
       valueInEth: amount,
       gas: 4200000,
+      toAddress,
+      message,
     })
   }
 
@@ -45,7 +47,7 @@ function AppBody() {
       <TextField
         label='To Address'
         value={toAddress}
-        onChange={event => setToAddress(event.target.value)}
+        onChange={event => setToAddress(event.target.value.slice(0, 42))}
       />
       <Box m={1} />
       <TextField
@@ -60,7 +62,12 @@ function AppBody() {
         onChange={event => setMessage(event.target.value)}
       />
       <Box m={3} />
-      <Button onClick={onClick} variant='contained' color='primary'>
+      <Button
+        onClick={onClick}
+        variant='contained'
+        color='primary'
+        disabled={toAddress.length !== 42 || toAddress.slice(0, 2) !== '0x'}
+      >
         Send ETH
       </Button>
     </Grid>
