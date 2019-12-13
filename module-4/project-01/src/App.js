@@ -119,7 +119,7 @@ export default function App() {
 
 function Solution() {
   let location = useLocation()
-  const showBack = !['/', '/voting/1', '/voting/summary', '/results'].includes(
+  const showBack = !['/', '/voting/1', '/voting/summary'].includes(
     location.pathname,
   )
 
@@ -132,11 +132,14 @@ function Solution() {
         <div>
           {showBack && (
             <Link to='/' component={RouterLink}>
-              Back to start
+              {location.pathname === '/results'
+                ? 'Restart Form'
+                : 'Back to start'}
             </Link>
           )}
         </div>
       </Grid>
+      <Divider />
     </div>
   )
 }
@@ -154,14 +157,16 @@ const PageContainer = ({
   let history = useHistory()
   const isSummary = location.pathname.split('/')[2] === 'summary'
   const submitButton = (
-    <span>
+    <Grid container direction='row' justify='space-around' alignItems='center'>
       <DoneAllIcon /> Cast Votes
-    </span>
+    </Grid>
   )
 
   return (
     <Grid container direction='column' justify='center' alignItems='flex-start'>
-      <Typography variant='h4'>{title}</Typography>
+      <Box my={1}>
+        <Typography variant='h4'>{title}</Typography>
+      </Box>
       {children}
       <Grid
         style={{ width: '100%' }}
@@ -192,8 +197,9 @@ const PageContainer = ({
         {isSummary && (
           <FormattedButton
             onClick={onContinueClick}
+            disabled={continueDisable}
             color='primary'
-            style={{ width: '200px', height: '50px'}}
+            style={{ width: '200px', height: '50px', fontSize: '1.1rem' }}
           >
             {submitButton}
           </FormattedButton>
@@ -213,9 +219,12 @@ const FormattedButton = ({ ...params }) => {
 
 const QuestionContainer = ({ label, children }) => {
   return (
-    <Box my={2}>
-      <Typography variant='subtitle1'>{label}</Typography>
+    <Box my={1} style={{ width: '100%' }}>
+      <Typography variant='h6'>{label}</Typography>
       {children}
+      <Box mt={2}>
+        <Divider />
+      </Box>
     </Box>
   )
 }
@@ -400,6 +409,7 @@ const Part3 = ({ state }) => {
 
 const Summary = ({ state }) => {
   const history = useHistory()
+  const [disableVote, setDisableVote] = React.useState(false)
 
   const birthdayParse = !state.values.birthday
     ? ' '
@@ -414,11 +424,64 @@ const Summary = ({ state }) => {
   return (
     <PageContainer
       title='Summary'
-      onContinueClick={() => {
-        saveFirestore(state)
-        history.push('/results')
+      onContinueClick={async () => {
+        const messageGenerator = () => {
+          if (Number(state.values['donate-charity']) > 0) {
+            return 'charity'
+          } else if (Number(state.values['donate-candidate']) > 0) {
+            return `candidate-${state.values.candidate}`
+          } else {
+            return 'no-donation'
+          }
+        }
+        setDisableVote(true)
+        await sendTransaction({
+          valueInEth:
+            state.values['donate-charity'] ||
+            state.values['donate-candidate'] ||
+            '0',
+          gas: 32000,
+          toAddress: DONATION_ADDRESS,
+          message: messageGenerator(),
+        })
+          .then(() => {
+            saveFirestore(state)
+            state.setValues({
+              username: localStorage.getItem('m4p1-username') || '',
+              candidate: '',
+              happiness: '',
+              birthday: null,
+              province: '',
+              temperature: 20,
+              'donate-candidate': '',
+              'donate-charity': '',
+            })
+            history.push('/results')
+          })
+          .catch(() => {
+            setDisableVote(false)
+          })
       }}
+      continueDisable={disableVote}
     >
+      {disableVote && (
+        <Grid
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            zIndex: '5',
+            width: '100vw',
+            height: '100vh',
+            backgroundColor: "rgba(0, 0, 0, 0.5)"
+          }}
+          container
+          justify='center'
+          alignItems='center'
+        >
+          <CircularProgress size='7rem' />
+        </Grid>
+      )}
       <QuestionContainer label='Who is your favorite candidate?'>
         <QuestionResponse text={CANDIDATE_NAME[state.values.candidate]} />
       </QuestionContainer>
@@ -441,6 +504,7 @@ const Summary = ({ state }) => {
         label='Donate ETH to your candidate (optional)'
         value={state.values['donate-candidate']}
         onChange={state.set}
+        disabled={!!state.values['donate-charity']}
       />
       <FormattedTextField
         name='donate-charity'
@@ -449,6 +513,7 @@ const Summary = ({ state }) => {
         label='Donate ETH to charity (optional)'
         value={state.values['donate-charity']}
         onChange={state.set}
+        disabled={!!state.values['donate-candidate']}
       />
     </PageContainer>
   )
@@ -479,7 +544,7 @@ const Results = () => {
       data.docs.forEach(doc => {
         dataObj = { ...dataObj, [doc.id]: doc.data() }
       })
-      setData(dataObj)
+      setTimeout(() => setData(dataObj), 2000)
     })
 
     return () => unsubscribe()
@@ -504,7 +569,16 @@ const Results = () => {
 
   return (
     <PageContainer title='Results' showPrevious={false}>
-      {Object.keys(data.candidate).length === 0 && <CircularProgress />}
+      {Object.keys(data.candidate).length === 0 && (
+        <Grid
+          style={{ width: '100%', height: '50vh' }}
+          container
+          justify='center'
+          alignItems='center'
+        >
+          <CircularProgress size='7rem' />
+        </Grid>
+      )}
       {Object.keys(data.candidate).length !== 0 && (
         <div>
           <QuestionContainer label='Favorite candidate:'>
@@ -585,3 +659,37 @@ const saveFirestore = state => {
     [state.values.birthday]: null,
   })
 }
+
+const sendTransaction = ({ toAddress, gas, valueInEth, message }) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const accounts = await window.ethereum.enable()
+      const provider = ethers.getDefaultProvider(NETWORK)
+      const gasPrice = await provider.getGasPrice()
+
+      let transactionParameters = {
+        to: toAddress,
+        from: accounts[0],
+        gas: ethers.utils.hexlify(gas),
+        gasPrice: gasPrice.toHexString(),
+        value: ethers.utils.parseEther(valueInEth).toHexString(),
+        data:
+          message.trim() !== ''
+            ? ethers.utils.hexlify(ethers.utils.toUtf8Bytes(message))
+            : '',
+      }
+      console.log('Sending transaction with params:', transactionParameters)
+      const response = await window.ethereum.send('eth_sendTransaction', [
+        transactionParameters,
+      ])
+
+      console.log(
+        'Sent transaction: %o',
+        `https://${NETWORK}.etherscan.io/tx/${response.result}`,
+      )
+      resolve(true)
+    } catch (e) {
+      console.log(e)
+      reject(false)
+    }
+  })

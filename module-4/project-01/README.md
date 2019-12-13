@@ -5,8 +5,3 @@
 1. Go into `src/App.js` to do the project
 
 Follow the instructions as described here: https://www.notion.so/Project-Voting-App-78269ac3562f454d8df22145f1603435
-
----
-To Do:
-- Metamask integration
-- CSS styling
