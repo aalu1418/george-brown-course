@@ -446,27 +446,49 @@ const Summary = ({ state }) => {
       title='Summary'
       onContinueClick={async () => {
         //set message for donation transaction
-        const messageGenerator = () => {
-          if (Number(state.values['donate-charity']) > 0) {
-            return 'charity'
-          } else if (Number(state.values['donate-candidate']) > 0) {
-            return `candidate-${state.values.candidate}`
-          } else {
-            return 'no-donation'
-          }
+
+        let transactionArray = []
+
+        //pushes promise to transaction array if value is present
+        if (Number(state.values['donate-charity']) > 0) {
+          transactionArray.push(
+            sendTransaction({
+              valueInEth:
+                state.values['donate-charity'],
+              gas: 32000,
+              toAddress: DONATION_ADDRESS,
+              message: "donation",
+            })
+          )
         }
+        if (Number(state.values['donate-candidate']) > 0) {
+          transactionArray.push(
+            sendTransaction({
+              valueInEth:
+                state.values['donate-candidate'],
+              gas: 32000,
+              toAddress: DONATION_ADDRESS,
+              message:`candidate-${state.values.candidate}`,
+            })
+          )
+        }
+        if (Number(state.values['donate-candidate']) === 0 && Number(state.values['donate-charity']) === 0){
+          transactionArray.push(
+            sendTransaction({
+              valueInEth:
+                "0",
+              gas: 32000,
+              toAddress: DONATION_ADDRESS,
+              message:`no-donation`,
+            })
+          )
+        }
+
         setDisableVote(true)
+        console.log(transactionArray);
 
         //send ethereum transaction
-        await sendTransaction({
-          valueInEth:
-            state.values['donate-charity'] ||
-            state.values['donate-candidate'] ||
-            '0',
-          gas: 32000,
-          toAddress: DONATION_ADDRESS,
-          message: messageGenerator(),
-        })
+        await Promise.all(transactionArray)
           .then(() => {
             //on success
             saveFirestore(state)
@@ -530,7 +552,6 @@ const Summary = ({ state }) => {
         label='Donate ETH to your candidate (optional)'
         value={state.values['donate-candidate']}
         onChange={state.set}
-        disabled={!!state.values['donate-charity']}
       />
       <FormattedTextField
         name='donate-charity'
@@ -539,7 +560,6 @@ const Summary = ({ state }) => {
         label='Donate ETH to charity (optional)'
         value={state.values['donate-charity']}
         onChange={state.set}
-        disabled={!!state.values['donate-candidate']}
       />
     </PageContainer>
   )
