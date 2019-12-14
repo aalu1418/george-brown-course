@@ -28,13 +28,34 @@ export default function App() {
 }
 
 function AppBody() {
+  const query = useQuery()
+  const history = useHistory()
+  const [searchString, setSearchString] = React.useState(query.get('search') || '')
+  const [filteredPHRASES, setFilteredPHRASES] = React.useState([])
+
+  React.useEffect(() => {
+      history.push(searchString ? `/?search=${searchString}` : "/")
+      setFilteredPHRASES(searchString ? PHRASES.filter(obj => obj.text.toLowerCase().includes(searchString.toLowerCase())) : PHRASES)
+  }, [searchString, history])
+
   return (
     <Grid container={true} direction='column'>
-      <TextField variant='outlined' label='Enter your search text' />
+      <TextField
+        variant='outlined'
+        label='Enter your search text'
+        value={searchString}
+        onChange={event => setSearchString(event.target.value)}
+      />
 
       <Box m={2} />
 
-      {/* Put your solution here 👇 */}
+      {filteredPHRASES.map(entry => (
+        <Box my={1} key={entry.id}>
+          <Paper>
+            <Box p={3}>{entry.text}</Box>
+          </Paper>
+        </Box>
+      ))}
     </Grid>
   )
 }
